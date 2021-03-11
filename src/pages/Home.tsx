@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { parseDate } from '../util/time';
 
 dotenv.config();
 
@@ -31,11 +32,6 @@ const Home = () => {
       .then(res => setWorkouts(res.data))
       .catch(err => console.log(err));
   }, []);
-
-  const parseDate = (date: string): string => {
-    const obj = new Date(date);
-    return `${obj.getDate()}-${obj.getMonth()}-${obj.getFullYear()}`;
-  };
 
   const renderSets = (sets: ISet[]) => {
     return sets.map((set: ISet, index) => {
@@ -82,7 +78,6 @@ const Home = () => {
                 <h4 className="title is-4 mb-1">{item.workout_name}</h4>
                 <p>{parseDate(item.workout_created_at)}</p>
               </div>
-
               <ul>{item.sets && renderSets(item.sets)}</ul>
             </div>
           );
