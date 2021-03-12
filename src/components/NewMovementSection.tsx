@@ -36,8 +36,13 @@ const NewMovementSection: React.FC<Props> = ({
 
   return (
     <div className="box mt-3 ml-3 mb-4 is-flex-direction-column">
-      <div className="is-flex is-flex-direction-row is-align-items-center is-justify-content-space-between mb-2">
-        <h4 className="title is-5 m-0">Movement name</h4>
+      <div className="is-flex is-flex-direction-row is-align-items-center mb-2">
+        <input
+          type="text"
+          placeholder="Movement"
+          className="input"
+          style={{ width: '250px' }}
+        />
         <button
           className="button is-danger m-1 is-small"
           onClick={handleMovementRemove}
@@ -54,7 +59,7 @@ const NewMovementSection: React.FC<Props> = ({
             <div
               key={index}
               id={String(index)}
-              className="is-flex is-align-items-center is-justify-content-space-between field"
+              className="is-flex is-align-items-center field"
             >
               <div>
                 <input
