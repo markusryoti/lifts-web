@@ -1,64 +1,35 @@
-import axios from 'axios';
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import NewMovementSection from '../components/NewMovementSection';
-import NewWorkoutCard from '../components/NewWorkoutCard';
-
-import dotenv from 'dotenv';
-import { parseDate } from '../util/time';
-dotenv.config();
-
-interface IApiWorkout {
-  created_at: string;
-  id: number;
-  name: string;
-  updated_at: string;
-  user_id: number;
-}
 
 export interface ISet {
-  reps: number;
-  weight: number;
+  reps: number | null;
+  weight: number | null;
 }
 
 export interface IMovementSection {
-  name: string;
-  sets: ISet[];
+  name: string | null;
+  sets: ISet[] | null;
 }
 
-const NewWorkout = () => {
-  const [
-    newWorkoutFromApi,
-    setNewWorkoutFromApi,
-  ] = useState<IApiWorkout | null>(null);
-  const [inputValue, setInputValue] = useState<string>('');
+const NewWorkoutCard = () => {
+  const [workoutName, setWorkoutName] = useState('');
   const [movementSections, setMovementSections] = useState<
     Array<IMovementSection>
   >([]);
 
-  const debug = true;
+  useEffect(() => {
+    console.log(movementSections);
+    // TODO
+    // Update to local storage
+  }, [movementSections]);
 
-  // Implement user stuff later
-  const userId = 1;
-
-  const addNewWorkout = () => {
-    // axios
-    //   .post(
-    //     `${process.env.REACT_APP_API_BASE_URL}/workouts/new`,
-    //     {
-    //       name: inputValue,
-    //     },
-    //     { headers: { userId } }
-    //   )
-    //   .then(res => {
-    //     setNewWorkoutFromApi(res.data);
-    //     setInputValue('');
-    //   })
-    //   .catch(err => console.log(err));
+  const handleDeleteWorkout = () => {
+    console.log('deleting workout');
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+  const handleSaveWorkout = () => {
+    console.log('saving workout');
   };
 
   const handleMovementSectionDelete = (removeItemIndex: number) => {
@@ -69,45 +40,77 @@ const NewWorkout = () => {
     );
   };
 
+  const handleWorkoutNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.currentTarget?.value) setWorkoutName(e.currentTarget?.value);
+  };
+
+  const handleWorkoutMovementNameUpdate = (
+    index: number,
+    movementName: string
+  ) => {
+    const newState = [...movementSections];
+    newState[index].name = movementName;
+    setMovementSections(newState);
+  };
+
+  const handleWorkoutMovementSetUpdate = (index: number, sets: ISet[]) => {
+    const newState = [...movementSections];
+    newState[index].sets = sets;
+    setMovementSections(newState);
+  };
+
   return (
-    <div className="p-2">
-      <div>
-        <div className="field">
-          <label className="label">Workout Name</label>
-          <div className="control">
-            <input
-              className="input"
-              type="text"
-              onChange={handleInputChange}
-              value={inputValue}
-            />
-          </div>
-        </div>
-        <div className="field is-grouped">
-          <div className="control">
-            <button className="button is-success" onClick={addNewWorkout}>
-              Add
-            </button>
-          </div>
-        </div>
+    <div className="card mt-5">
+      <div className="is-flex is-align-items-center mt-3 mb-3">
+        <input
+          className="input ml-3 mb-0"
+          placeholder="Workout Name"
+          onChange={handleWorkoutNameChange}
+        />
+        <button
+          className="button is-danger m-1 is-small"
+          onClick={handleDeleteWorkout}
+        >
+          <i className="fas fa-times-circle"></i>{' '}
+        </button>
       </div>
 
-      {debug && (
-        <NewWorkoutCard
-          movementSections={movementSections}
-          handleMovementSectionDelete={handleMovementSectionDelete}
-          setMovementSections={setMovementSections}
-        />
-      )}
-      {/* {newWorkoutFromApi && (
-        <div className="card mt-5">
-          <h4 className="title is-4">
-            {newWorkoutFromApi?.name} {parseDate(newWorkoutFromApi?.created_at)}
-          </h4>
-        </div>
-      )} */}
+      {movementSections &&
+        movementSections.map((item: IMovementSection, index: number) => {
+          return (
+            <NewMovementSection
+              key={index}
+              itemIndex={index}
+              movementItem={item}
+              handleRemove={handleMovementSectionDelete}
+              handleWorkoutMovementNameUpdate={handleWorkoutMovementNameUpdate}
+              handleWorkoutMovementSetUpdate={handleWorkoutMovementSetUpdate}
+            />
+          );
+        })}
+      <div className="mb-3 ml-3 is-flex-direction-column">
+        <p className="mb-1">Add Movement</p>
+        <button
+          className="button is-primary is-small"
+          onClick={() => {
+            const updatedMovements = [
+              ...movementSections,
+              { name: null, sets: null },
+            ];
+            setMovementSections(updatedMovements);
+          }}
+        >
+          <i className="fas fa-2x fa-plus-circle"></i>
+        </button>
+      </div>
+      <div className="m-3">
+        <hr />
+        <button className="button is-success" onClick={handleSaveWorkout}>
+          Save Workout
+        </button>
+      </div>
     </div>
   );
 };
 
-export default NewWorkout;
+export default NewWorkoutCard;
