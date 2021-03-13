@@ -13,7 +13,7 @@ const Navbar = () => {
     <nav className="navbar" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
         <Link to="/" className="navbar-item">
-          My Icon Here
+          <i className="fas fa-3x fa-dumbbell"></i>
         </Link>
 
         <a

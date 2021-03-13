@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import NewMovementSection from '../components/NewMovementSection';
+import { getCurrentDate } from '../util/time';
 
 export interface ISet {
   reps: number | null;
@@ -15,6 +16,7 @@ export interface IMovementSection {
 interface IWorkoutState {
   name: string | null;
   movements: IMovementSection[];
+  createdAt: string | null;
 }
 
 const NewWorkoutCard = () => {
@@ -22,6 +24,7 @@ const NewWorkoutCard = () => {
   const [movementSections, setMovementSections] = useState<
     Array<IMovementSection>
   >([]);
+  const [createdAt, setCreatedAt] = useState<string | null>(null);
 
   // On load get stuff from local storage if exists
   useEffect(() => {
@@ -30,6 +33,7 @@ const NewWorkoutCard = () => {
       const stateAsJson: IWorkoutState = JSON.parse(cachedState);
       if (stateAsJson.name) setWorkoutName(stateAsJson.name);
       if (stateAsJson.movements) setMovementSections(stateAsJson.movements);
+      if (stateAsJson.createdAt) setCreatedAt(stateAsJson.createdAt);
     }
   }, []);
 
@@ -38,17 +42,25 @@ const NewWorkoutCard = () => {
     const workoutState: IWorkoutState = {
       name: workoutName,
       movements: movementSections,
+      createdAt: createdAt,
     };
 
-    if (workoutState.name && workoutState.movements) {
+    // Valid only if contains name, then update
+    // Otherwise just delete the state in storage
+    if (workoutState.name) {
       const stateAsString = JSON.stringify(workoutState);
       localStorage.setItem('newWorkoutCache', stateAsString);
+    } else {
+      localStorage.removeItem('newWorkoutCache');
     }
+    // eslint-disable-next-line
   }, [workoutName, movementSections]);
 
   const handleDeleteWorkout = () => {
+    // Need to set everything manually
     setWorkoutName('');
     setMovementSections([]);
+    setCreatedAt(null);
     localStorage.removeItem('newWorkoutCache');
   };
 
@@ -65,7 +77,16 @@ const NewWorkoutCard = () => {
   };
 
   const handleWorkoutNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWorkoutName(e.currentTarget?.value);
+    const newValue = e.currentTarget?.value;
+    setWorkoutName(newValue);
+
+    // If it's now empty, clear the created at value
+    if (!newValue) {
+      setCreatedAt(null);
+      // Else the value is valid, check if initally null and set to current value
+    } else if (createdAt === null) {
+      setCreatedAt(getCurrentDate());
+    }
   };
 
   const handleWorkoutMovementNameUpdate = (
@@ -92,13 +113,16 @@ const NewWorkoutCard = () => {
           value={workoutName}
           onChange={handleWorkoutNameChange}
         />
-        <button
-          className="button is-danger m-1 is-small"
-          onClick={handleDeleteWorkout}
-        >
-          <i className="fas fa-times-circle"></i>{' '}
+        <button className="button is-danger m-1" onClick={handleDeleteWorkout}>
+          Clear
         </button>
       </div>
+
+      {(movementSections.length > 0 || workoutName) && (
+        <p className="m-3">
+          <i>Draft, Created @ {createdAt}</i>
+        </p>
+      )}
 
       {movementSections &&
         movementSections.map((item: IMovementSection, index: number) => {
@@ -113,6 +137,7 @@ const NewWorkoutCard = () => {
             />
           );
         })}
+
       <div className="mb-3 ml-3 is-flex-direction-column">
         <p className="mb-1">Add Movement</p>
         <button
