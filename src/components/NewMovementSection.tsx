@@ -58,11 +58,12 @@ const NewMovementSection: React.FC<Props> = ({
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
 
-    if (value) {
-      if (name === 'movementName') {
-        setName(value);
-      }
+    // Name can essentially be whatever
+    if (name === 'movementName') {
+      setName(value);
+    }
 
+    if (value) {
       let inputType, index;
       const valueArr = name.split('-');
 
@@ -124,6 +125,7 @@ const NewMovementSection: React.FC<Props> = ({
                   name={`reps-${index}`}
                   value={String(sets[index].reps)}
                   placeholder="Reps"
+                  min="0"
                   className="input m-1"
                   style={{ width: '75px' }}
                   onChange={handleInputChange}
@@ -133,6 +135,7 @@ const NewMovementSection: React.FC<Props> = ({
                   name={`weight-${index}`}
                   value={String(sets[index].weight)}
                   placeholder="Weight"
+                  min="0"
                   className="input m-1"
                   style={{ width: '100px' }}
                   onChange={handleInputChange}

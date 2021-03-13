@@ -23,27 +23,33 @@ const NewWorkoutCard = () => {
     Array<IMovementSection>
   >([]);
 
+  // On load get stuff from local storage if exists
   useEffect(() => {
     const cachedState = localStorage.getItem('newWorkoutCache');
     if (cachedState) {
       const stateAsJson: IWorkoutState = JSON.parse(cachedState);
       if (stateAsJson.name) setWorkoutName(stateAsJson.name);
-      setMovementSections(stateAsJson.movements);
+      if (stateAsJson.movements) setMovementSections(stateAsJson.movements);
     }
   }, []);
 
+  // When ever something in workout state changes, update it to local storage
   useEffect(() => {
     const workoutState: IWorkoutState = {
       name: workoutName,
       movements: movementSections,
     };
 
-    const stateAsString = JSON.stringify(workoutState);
-    localStorage.setItem('newWorkoutCache', stateAsString);
+    if (workoutState.name && workoutState.movements) {
+      const stateAsString = JSON.stringify(workoutState);
+      localStorage.setItem('newWorkoutCache', stateAsString);
+    }
   }, [workoutName, movementSections]);
 
   const handleDeleteWorkout = () => {
-    console.log('deleting workout');
+    setWorkoutName('');
+    setMovementSections([]);
+    localStorage.removeItem('newWorkoutCache');
   };
 
   const handleSaveWorkout = () => {
@@ -59,7 +65,7 @@ const NewWorkoutCard = () => {
   };
 
   const handleWorkoutNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget?.value) setWorkoutName(e.currentTarget?.value);
+    setWorkoutName(e.currentTarget?.value);
   };
 
   const handleWorkoutMovementNameUpdate = (
@@ -122,12 +128,14 @@ const NewWorkoutCard = () => {
           <i className="fas fa-2x fa-plus-circle"></i>
         </button>
       </div>
-      <div className="m-3">
-        <hr />
-        <button className="button is-success" onClick={handleSaveWorkout}>
-          Save Workout
-        </button>
-      </div>
+
+      {movementSections.length !== 0 && (
+        <div className="m-3 is-flex is-justify-content-center">
+          <button className="button is-success" onClick={handleSaveWorkout}>
+            Save Workout
+          </button>
+        </div>
+      )}
     </div>
   );
 };
