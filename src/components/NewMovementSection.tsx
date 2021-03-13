@@ -19,6 +19,12 @@ const NewMovementSection: React.FC<Props> = ({
   const [name, setName] = useState<string>('');
   const [sets, setSets] = useState<ISet[]>([]);
 
+  useEffect(() => {
+    if (movementItem.name) setName(movementItem.name);
+    if (movementItem.sets) setSets(movementItem.sets);
+    // eslint-disable-next-line
+  }, []);
+
   // When sets are changed, change also the global state
   useEffect(() => {
     handleWorkoutMovementNameUpdate(itemIndex, name);
@@ -88,6 +94,7 @@ const NewMovementSection: React.FC<Props> = ({
         <input
           type="text"
           name="movementName"
+          value={name}
           placeholder="Movement"
           className="input"
           style={{ width: '250px' }}
@@ -115,6 +122,7 @@ const NewMovementSection: React.FC<Props> = ({
                 <input
                   type="number"
                   name={`reps-${index}`}
+                  value={String(sets[index].reps)}
                   placeholder="Reps"
                   className="input m-1"
                   style={{ width: '75px' }}
@@ -123,6 +131,7 @@ const NewMovementSection: React.FC<Props> = ({
                 <input
                   type="number"
                   name={`weight-${index}`}
+                  value={String(sets[index].weight)}
                   placeholder="Weight"
                   className="input m-1"
                   style={{ width: '100px' }}

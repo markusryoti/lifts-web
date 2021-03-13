@@ -12,17 +12,35 @@ export interface IMovementSection {
   sets: ISet[] | null;
 }
 
+interface IWorkoutState {
+  name: string | null;
+  movements: IMovementSection[];
+}
+
 const NewWorkoutCard = () => {
-  const [workoutName, setWorkoutName] = useState('');
+  const [workoutName, setWorkoutName] = useState<string>('');
   const [movementSections, setMovementSections] = useState<
     Array<IMovementSection>
   >([]);
 
   useEffect(() => {
-    console.log(movementSections);
-    // TODO
-    // Update to local storage
-  }, [movementSections]);
+    const cachedState = localStorage.getItem('newWorkoutCache');
+    if (cachedState) {
+      const stateAsJson: IWorkoutState = JSON.parse(cachedState);
+      if (stateAsJson.name) setWorkoutName(stateAsJson.name);
+      setMovementSections(stateAsJson.movements);
+    }
+  }, []);
+
+  useEffect(() => {
+    const workoutState: IWorkoutState = {
+      name: workoutName,
+      movements: movementSections,
+    };
+
+    const stateAsString = JSON.stringify(workoutState);
+    localStorage.setItem('newWorkoutCache', stateAsString);
+  }, [workoutName, movementSections]);
 
   const handleDeleteWorkout = () => {
     console.log('deleting workout');
@@ -65,6 +83,7 @@ const NewWorkoutCard = () => {
         <input
           className="input ml-3 mb-0"
           placeholder="Workout Name"
+          value={workoutName}
           onChange={handleWorkoutNameChange}
         />
         <button
