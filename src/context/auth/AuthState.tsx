@@ -42,7 +42,9 @@ const AuthState = (props: any) => {
         type: 'LOAD_USER',
         payload: result.data,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const login = async (username: string, password: string) => {

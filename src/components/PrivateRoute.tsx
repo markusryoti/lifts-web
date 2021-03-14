@@ -4,13 +4,13 @@ import { AuthContext, IProvider } from '../context/auth/AuthState';
 import { Route, Redirect, RouteProps } from 'react-router-dom';
 
 interface PrivateRouteProps extends RouteProps {
-  // tslint:disable-next-line:no-any
   component: any;
 }
 
 const PrivateRoute = (props: PrivateRouteProps) => {
   const authContext = useContext(AuthContext);
   const { isAuthenticated } = authContext as IProvider;
+
   const { component: Component, ...rest } = props;
 
   // If not authenticated but found token, try to get user from server with that token

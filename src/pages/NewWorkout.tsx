@@ -1,4 +1,6 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import NewMovementSection from '../components/NewMovementSection';
 import { getCurrentDate } from '../util/time';
@@ -19,7 +21,9 @@ interface IWorkoutState {
   createdAt: string | null;
 }
 
-const NewWorkoutCard = () => {
+interface Props extends RouteComponentProps {}
+
+const NewWorkoutCard: React.FC<Props> = props => {
   const [workoutName, setWorkoutName] = useState<string>('');
   const [movementSections, setMovementSections] = useState<
     Array<IMovementSection>
@@ -37,7 +41,7 @@ const NewWorkoutCard = () => {
     }
   }, []);
 
-  // When ever something in workout state changes, update it to local storage
+  // Whenever something in workout state changes, update it to local storage
   useEffect(() => {
     const workoutState: IWorkoutState = {
       name: workoutName,
@@ -64,8 +68,25 @@ const NewWorkoutCard = () => {
     localStorage.removeItem('newWorkoutCache');
   };
 
-  const handleSaveWorkout = () => {
-    console.log('saving workout');
+  const handleSaveWorkout = async () => {
+    const newWorkout = {
+      name: workoutName,
+      movements: movementSections,
+      createdAt: createdAt,
+    };
+
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/workouts/new`,
+        newWorkout
+      );
+      if (result.status === 200) {
+        handleDeleteWorkout();
+        props.history.push('/');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleMovementSectionDelete = (removeItemIndex: number) => {

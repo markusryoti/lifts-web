@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import dotenv from 'dotenv';
 
-import { AuthContext } from '../context/auth/AuthState';
+import { AuthContext, IProvider } from '../context/auth/AuthState';
 dotenv.config();
 
 interface IFormState {
@@ -12,17 +12,20 @@ interface IFormState {
 const Login = (props: any) => {
   const authContext = useContext(AuthContext);
 
+  // Is not going to be null
+  const { isAuthenticated, login } = authContext as IProvider;
+
   const [userInfo, setUserInfo] = useState<IFormState>({
     loginvalue: null,
     password: null,
   });
 
   useEffect(() => {
-    if (authContext?.isAuthenticated) {
+    if (isAuthenticated) {
       props.history.push('/');
     }
     // eslint-disable-next-line
-  }, [authContext?.isAuthenticated, props.history]);
+  }, [isAuthenticated, props.history]);
 
   const onFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newState = {
@@ -42,7 +45,7 @@ const Login = (props: any) => {
     }
 
     // Login
-    authContext?.login(loginvalue as string, password as string);
+    login(loginvalue as string, password as string);
   };
 
   return (
