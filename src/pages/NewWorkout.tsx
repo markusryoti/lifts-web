@@ -109,7 +109,7 @@ const NewWorkoutCard = () => {
       <div className="is-flex is-align-items-center mt-3 mb-3">
         <input
           className="input ml-3 mb-0"
-          placeholder="Workout Name"
+          placeholder="Workout name"
           value={workoutName}
           onChange={handleWorkoutNameChange}
         />

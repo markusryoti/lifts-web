@@ -1,11 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext, IProvider } from '../context/auth/AuthState';
 
 const Navbar = () => {
+  const authContext = useContext(AuthContext);
+  const { isAuthenticated } = authContext as IProvider;
+
   const [isActive, setIsActive] = useState(false);
   const [showDropDownItems, setShowDropDownItems] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(true);
 
   const burgerNavRef = useRef<any>();
 
@@ -42,9 +45,11 @@ const Navbar = () => {
             Home
           </Link>
 
-          <Link className="navbar-item" to="/new">
-            New
-          </Link>
+          {authContext?.isAuthenticated && (
+            <Link className="navbar-item" to="/new">
+              New
+            </Link>
+          )}
 
           <div className="navbar-item has-dropdown is-hoverable">
             <a
@@ -70,12 +75,17 @@ const Navbar = () => {
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="buttons">
-              {loggedIn ? (
+              {isAuthenticated ? (
                 <>
                   <Link to="/profile" className="button is-primary">
-                    <i className="fas fa-user"></i>My Profile
+                    <i className="fas fa-user"></i>
+                    {authContext?.user?.username}
                   </Link>
-                  <Link to="/logout" className="button is-warning">
+                  <Link
+                    to="/logout"
+                    className="button is-warning"
+                    onClick={() => authContext?.logout()}
+                  >
                     <i className="fas fa-sign-out-alt"></i> Logout
                   </Link>
                 </>

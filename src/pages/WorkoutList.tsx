@@ -21,14 +21,12 @@ interface IWorkout {
   sets: ISet[];
 }
 
-const Home = () => {
+const WorkoutList = () => {
   const [workouts, setWorkouts] = useState<IWorkout[] | null>(null);
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_BASE_URL}/workouts`, {
-        headers: { userId: 1 },
-      })
+      .get(`${process.env.REACT_APP_API_BASE_URL}/workouts`)
       .then(res => setWorkouts(res.data))
       .catch(err => console.log(err));
   }, []);
@@ -86,4 +84,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default WorkoutList;

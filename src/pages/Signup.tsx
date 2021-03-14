@@ -1,17 +1,34 @@
 import React, { useState } from 'react';
 
+interface IFormState {
+  username?: string;
+  email?: string;
+  password?: string;
+}
+
 const Signup = () => {
-  const [formState, setFormState] = useState<any>();
+  const [userInfo, setUserInfo] = useState<IFormState | null>(null);
+
+  const onFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newState = {
+      ...userInfo,
+      [e.target.name]: e.target.value,
+    };
+    setUserInfo(newState);
+    console.log(userInfo);
+  };
+
+  const onFormSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    if (!userInfo?.username || !userInfo?.password) {
+      console.error('Need both login values');
+    }
+
+    // Signup
+  };
 
   return (
     <div>
-      <div className="field">
-        <label className="label">Name</label>
-        <div className="control">
-          <input className="input" type="text" placeholder="Text input" />
-        </div>
-      </div>
-
       <div className="field">
         <label className="label">Username</label>
         <div className="control has-icons-left has-icons-right">
@@ -38,7 +55,6 @@ const Signup = () => {
             className="input is-danger"
             type="email"
             placeholder="Email input"
-            value="hello@"
           />
           <span className="icon is-small is-left">
             <i className="fas fa-envelope"></i>
@@ -48,6 +64,42 @@ const Signup = () => {
           </span>
         </div>
         <p className="help is-danger">This email is invalid</p>
+      </div>
+
+      <div className="field">
+        <label className="label">Password</label>
+        <div className="control has-icons-left has-icons-right">
+          <input
+            className="input is-success"
+            type="password"
+            placeholder="Text input"
+            value="bulma"
+          />
+          <span className="icon is-small is-left">
+            <i className="fas fa-user"></i>
+          </span>
+          <span className="icon is-small is-right">
+            <i className="fas fa-check"></i>
+          </span>
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="label">Verify Password</label>
+        <div className="control has-icons-left has-icons-right">
+          <input
+            className="input is-success"
+            type="password"
+            placeholder="Text input"
+            value="bulma"
+          />
+          <span className="icon is-small is-left">
+            <i className="fas fa-user"></i>
+          </span>
+          <span className="icon is-small is-right">
+            <i className="fas fa-check"></i>
+          </span>
+        </div>
       </div>
 
       <div className="field">
