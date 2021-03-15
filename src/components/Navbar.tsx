@@ -13,9 +13,13 @@ const Navbar = () => {
   const burgerNavRef = useRef<any>();
 
   return (
-    <nav className="navbar" role="navigation" aria-label="main navigation">
+    <nav
+      className="navbar is-dark"
+      role="navigation"
+      aria-label="main navigation"
+    >
       <div className="navbar-brand">
-        <Link to="/" className="navbar-item">
+        <Link to="/home" className="navbar-item">
           <i className="fas fa-3x fa-dumbbell"></i>
         </Link>
 
@@ -41,14 +45,19 @@ const Navbar = () => {
         ref={burgerNavRef}
       >
         <div className="navbar-start">
-          <Link className="navbar-item" to="/">
+          <Link className="navbar-item" to="/home">
             Home
           </Link>
 
           {authContext?.isAuthenticated && (
-            <Link className="navbar-item" to="/new">
-              New
-            </Link>
+            <>
+              <Link className="navbar-item" to="/list">
+                Workouts
+              </Link>
+              <Link className="navbar-item" to="/new">
+                New
+              </Link>
+            </>
           )}
 
           <div className="navbar-item has-dropdown is-hoverable">
@@ -94,7 +103,7 @@ const Navbar = () => {
                   <Link className="button is-primary" to="/signup">
                     <strong>Sign up</strong>
                   </Link>
-                  <Link className="button is-light" to="/login">
+                  <Link className="button is-info" to="/login">
                     Log in
                   </Link>
                 </>

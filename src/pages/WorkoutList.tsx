@@ -58,7 +58,7 @@ const WorkoutList = () => {
   };
 
   return (
-    <div>
+    <div className="container mt-5">
       <h1 className="title has-text-centered">My Workouts</h1>
 
       <div className="has-text-centered mb-3 is-flex-direction-column">

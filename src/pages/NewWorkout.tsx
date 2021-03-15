@@ -136,56 +136,63 @@ const NewWorkoutCard: React.FC<Props> = props => {
   };
 
   return (
-    <div className="card mt-5">
-      <div className="is-flex is-align-items-center mt-3 mb-3">
-        <input
-          className="input ml-3 mb-0"
-          placeholder="Workout name"
-          value={workoutName}
-          onChange={handleWorkoutNameChange}
-        />
-        <button className="button is-danger m-1" onClick={handleDeleteWorkout}>
-          Clear
-        </button>
-      </div>
-
-      {(movementSections.length > 0 || workoutName) && (
-        <p className="m-3">
-          <i>Draft, Created @ {createdAt}</i>
-        </p>
-      )}
-
-      {movementSections &&
-        movementSections.map((item: IMovementSection, index: number) => {
-          return (
-            <NewMovementSection
-              key={index}
-              itemIndex={index}
-              movementItem={item}
-              handleRemove={handleMovementSectionDelete}
-              handleWorkoutMovementNameUpdate={handleWorkoutMovementNameUpdate}
-              handleWorkoutMovementSetUpdate={handleWorkoutMovementSetUpdate}
-            />
-          );
-        })}
-
-      <div className="mb-3 ml-3 is-flex-direction-column">
-        <p className="mb-1">Add Movement</p>
-        <button
-          className="button is-primary is-small"
-          onClick={handleAddMovement}
-        >
-          <i className="fas fa-2x fa-plus-circle"></i>
-        </button>
-      </div>
-
-      {movementSections.length !== 0 && (
-        <div className="m-3 is-flex is-justify-content-center">
-          <button className="button is-success" onClick={handleSaveWorkout}>
-            Save Workout
+    <div className="container mt-5">
+      <div className="card mt-5">
+        <div className="is-flex is-align-items-center mt-3 mb-3">
+          <input
+            className="input ml-3 mb-0"
+            placeholder="Workout name"
+            value={workoutName}
+            onChange={handleWorkoutNameChange}
+          />
+          <button
+            className="button is-danger m-1"
+            onClick={handleDeleteWorkout}
+          >
+            Clear
           </button>
         </div>
-      )}
+
+        {(movementSections.length > 0 || workoutName) && (
+          <p className="m-3">
+            <i>Draft, Created @ {createdAt}</i>
+          </p>
+        )}
+
+        {movementSections &&
+          movementSections.map((item: IMovementSection, index: number) => {
+            return (
+              <NewMovementSection
+                key={index}
+                itemIndex={index}
+                movementItem={item}
+                handleRemove={handleMovementSectionDelete}
+                handleWorkoutMovementNameUpdate={
+                  handleWorkoutMovementNameUpdate
+                }
+                handleWorkoutMovementSetUpdate={handleWorkoutMovementSetUpdate}
+              />
+            );
+          })}
+
+        <div className="mb-3 ml-3 is-flex-direction-column">
+          <p className="mb-1">Add Movement</p>
+          <button
+            className="button is-primary is-small"
+            onClick={handleAddMovement}
+          >
+            <i className="fas fa-2x fa-plus-circle"></i>
+          </button>
+        </div>
+
+        {movementSections.length !== 0 && (
+          <div className="m-3 is-flex is-justify-content-center">
+            <button className="button is-success" onClick={handleSaveWorkout}>
+              Save Workout
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

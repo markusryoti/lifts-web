@@ -20,7 +20,7 @@ const Signup = (props: any) => {
 
   useEffect(() => {
     if (authContext.isAuthenticated) {
-      props.history.push('/');
+      props.history.push('/list');
     }
     // eslint-disable-next-line
   }, [authContext.isAuthenticated, props.history]);
@@ -51,7 +51,7 @@ const Signup = (props: any) => {
   };
 
   return (
-    <div>
+    <div className="container mt-5">
       <div className="field">
         <label className="label">Username</label>
         <div className="control has-icons-left has-icons-right">
