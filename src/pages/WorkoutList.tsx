@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import dotenv from 'dotenv';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { parseDate } from '../util/time';
 
+import dotenv from 'dotenv';
 dotenv.config();
 
-interface ISet {
+export interface ISet {
   set_id: string;
   reps: number;
   weight: number;
@@ -14,7 +14,7 @@ interface ISet {
   set_created_at: string;
 }
 
-interface IWorkout {
+export interface IWorkout {
   workout_id: string;
   workout_name: string;
   workout_created_at: string;
@@ -72,10 +72,16 @@ const WorkoutList = () => {
         workouts.map((item: IWorkout) => {
           return (
             <div className="box" key={item.workout_id}>
-              <div className="mb-5">
-                <h4 className="title is-4 mb-1">{item.workout_name}</h4>
-                <p>{parseDate(item.workout_created_at)}</p>
+              <div className="is-flex is-justify-content-space-between">
+                <div className="mb-5">
+                  <h4 className="title is-4 mb-1">{item.workout_name}</h4>
+                  <p>{parseDate(item.workout_created_at)}</p>
+                </div>
+                <Link to={`/workouts/${item.workout_id}`}>
+                  <i className="fas fa-2x fa-eye"></i>
+                </Link>
               </div>
+
               <ul>{item.sets && renderSets(item.sets)}</ul>
             </div>
           );

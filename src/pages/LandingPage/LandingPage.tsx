@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import './landingpage.css';
 
@@ -9,7 +10,9 @@ const LandingPage = () => {
         <div className="hero-body">
           <p className="title has-text-black-ter">Primary hero</p>
           <p className="subtitle has-text-black-ter">Primary subtitle</p>
-          <button className="button is-danger">Start Now</button>
+          <Link to="/signup" className="button is-danger">
+            Start Now
+          </Link>
         </div>
       </section>
       <p>

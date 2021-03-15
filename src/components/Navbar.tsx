@@ -19,7 +19,7 @@ const Navbar = () => {
       aria-label="main navigation"
     >
       <div className="navbar-brand">
-        <Link to="/home" className="navbar-item">
+        <Link to="/" className="navbar-item">
           <i className="fas fa-3x fa-dumbbell"></i>
         </Link>
 
@@ -45,13 +45,13 @@ const Navbar = () => {
         ref={burgerNavRef}
       >
         <div className="navbar-start">
-          <Link className="navbar-item" to="/home">
+          <Link className="navbar-item" to="/">
             Home
           </Link>
 
           {authContext?.isAuthenticated && (
             <>
-              <Link className="navbar-item" to="/list">
+              <Link className="navbar-item" to="/workouts">
                 Workouts
               </Link>
               <Link className="navbar-item" to="/new">

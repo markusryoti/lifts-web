@@ -2,7 +2,7 @@ import React from 'react';
 
 const Logout = () => {
   return (
-    <div>
+    <div className="container mt-5">
       <h1>Bye</h1>
     </div>
   );

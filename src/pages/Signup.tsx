@@ -20,7 +20,7 @@ const Signup = (props: any) => {
 
   useEffect(() => {
     if (authContext.isAuthenticated) {
-      props.history.push('/list');
+      props.history.push('/workouts');
     }
     // eslint-disable-next-line
   }, [authContext.isAuthenticated, props.history]);
@@ -44,6 +44,7 @@ const Signup = (props: any) => {
 
     if (!username || !password) {
       alert('Need both login values');
+      return;
     }
 
     // Signup

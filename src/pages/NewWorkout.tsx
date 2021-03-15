@@ -82,7 +82,7 @@ const NewWorkoutCard: React.FC<Props> = props => {
       );
       if (result.status === 200) {
         handleDeleteWorkout();
-        props.history.push('/');
+        props.history.push('/workouts');
       }
     } catch (error) {
       console.log(error);

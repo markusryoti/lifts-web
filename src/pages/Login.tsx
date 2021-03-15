@@ -22,7 +22,7 @@ const Login = (props: any) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      props.history.push('/list');
+      props.history.push('/workouts');
     }
     // eslint-disable-next-line
   }, [isAuthenticated, props.history]);
