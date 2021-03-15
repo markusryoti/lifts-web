@@ -110,6 +110,16 @@ const NewWorkoutCard: React.FC<Props> = props => {
     }
   };
 
+  const handleAddMovement = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    if (createdAt === null) {
+      setCreatedAt(getCurrentDate());
+    }
+    const updatedMovements = [...movementSections, { name: null, sets: null }];
+    setMovementSections(updatedMovements);
+  };
+
   const handleWorkoutMovementNameUpdate = (
     index: number,
     movementName: string
@@ -163,13 +173,7 @@ const NewWorkoutCard: React.FC<Props> = props => {
         <p className="mb-1">Add Movement</p>
         <button
           className="button is-primary is-small"
-          onClick={() => {
-            const updatedMovements = [
-              ...movementSections,
-              { name: null, sets: null },
-            ];
-            setMovementSections(updatedMovements);
-          }}
+          onClick={handleAddMovement}
         >
           <i className="fas fa-2x fa-plus-circle"></i>
         </button>

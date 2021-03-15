@@ -78,7 +78,7 @@ const Navbar = () => {
               {isAuthenticated ? (
                 <>
                   <Link to="/profile" className="button is-primary">
-                    <i className="fas fa-user"></i>
+                    <i className="fas fa-user mr-1"></i>
                     {authContext?.user?.username}
                   </Link>
                   <Link
@@ -86,7 +86,7 @@ const Navbar = () => {
                     className="button is-warning"
                     onClick={() => authContext?.logout()}
                   >
-                    <i className="fas fa-sign-out-alt"></i> Logout
+                    <i className="fas fa-sign-out-alt mr-1"></i> Logout
                   </Link>
                 </>
               ) : (

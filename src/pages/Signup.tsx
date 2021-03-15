@@ -1,30 +1,53 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { AuthContext, IProvider } from '../context/auth/AuthState';
 
 interface IFormState {
-  username?: string;
-  email?: string;
-  password?: string;
+  username: string;
+  email: string;
+  password: string;
+  password2: string;
 }
 
-const Signup = () => {
-  const [userInfo, setUserInfo] = useState<IFormState | null>(null);
+const Signup = (props: any) => {
+  const authContext = useContext(AuthContext) as IProvider;
 
-  const onFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [userInfo, setUserInfo] = useState<IFormState>({
+    username: '',
+    email: '',
+    password: '',
+    password2: '',
+  });
+
+  useEffect(() => {
+    if (authContext.isAuthenticated) {
+      props.history.push('/');
+    }
+    // eslint-disable-next-line
+  }, [authContext.isAuthenticated, props.history]);
+
+  const onValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newState = {
       ...userInfo,
       [e.target.name]: e.target.value,
     };
     setUserInfo(newState);
-    console.log(userInfo);
   };
 
   const onFormSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    if (!userInfo?.username || !userInfo?.password) {
-      console.error('Need both login values');
+    const { username, email, password, password2 } = userInfo;
+
+    if (password !== password2) {
+      alert("Passwords don't match");
+      return;
+    }
+
+    if (!username || !password) {
+      alert('Need both login values');
     }
 
     // Signup
+    authContext.signup(username, email, password);
   };
 
   return (
@@ -33,53 +56,43 @@ const Signup = () => {
         <label className="label">Username</label>
         <div className="control has-icons-left has-icons-right">
           <input
-            className="input is-success"
+            className="input"
             type="text"
-            placeholder="Text input"
-            value="bulma"
+            name="username"
+            onChange={onValueChange}
           />
           <span className="icon is-small is-left">
             <i className="fas fa-user"></i>
           </span>
-          <span className="icon is-small is-right">
-            <i className="fas fa-check"></i>
-          </span>
         </div>
-        <p className="help is-success">This username is available</p>
       </div>
 
       <div className="field">
         <label className="label">Email</label>
         <div className="control has-icons-left has-icons-right">
           <input
-            className="input is-danger"
+            className="input"
             type="email"
-            placeholder="Email input"
+            name="email"
+            onChange={onValueChange}
           />
           <span className="icon is-small is-left">
             <i className="fas fa-envelope"></i>
           </span>
-          <span className="icon is-small is-right">
-            <i className="fas fa-exclamation-triangle"></i>
-          </span>
         </div>
-        <p className="help is-danger">This email is invalid</p>
       </div>
 
       <div className="field">
         <label className="label">Password</label>
         <div className="control has-icons-left has-icons-right">
           <input
-            className="input is-success"
+            className="input"
             type="password"
-            placeholder="Text input"
-            value="bulma"
+            name="password"
+            onChange={onValueChange}
           />
           <span className="icon is-small is-left">
-            <i className="fas fa-user"></i>
-          </span>
-          <span className="icon is-small is-right">
-            <i className="fas fa-check"></i>
+            <i className="fas fa-key"></i>{' '}
           </span>
         </div>
       </div>
@@ -88,16 +101,13 @@ const Signup = () => {
         <label className="label">Verify Password</label>
         <div className="control has-icons-left has-icons-right">
           <input
-            className="input is-success"
+            className="input is"
             type="password"
-            placeholder="Text input"
-            value="bulma"
+            name="password2"
+            onChange={onValueChange}
           />
           <span className="icon is-small is-left">
-            <i className="fas fa-user"></i>
-          </span>
-          <span className="icon is-small is-right">
-            <i className="fas fa-check"></i>
+            <i className="fas fa-key"></i>{' '}
           </span>
         </div>
       </div>
@@ -105,15 +115,17 @@ const Signup = () => {
       <div className="field">
         <div className="control">
           <label className="checkbox">
-            <input type="checkbox" />I agree to the{' '}
-            <a href="#">terms and conditions</a>
+            <input type="checkbox" /> I agree to the{' '}
+            <a href="about">terms and conditions</a>
           </label>
         </div>
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button className="button is-link">Submit</button>
+          <button className="button is-link" onClick={onFormSubmit}>
+            Submit
+          </button>
         </div>
         <div className="control">
           <button className="button is-link is-light">Cancel</button>

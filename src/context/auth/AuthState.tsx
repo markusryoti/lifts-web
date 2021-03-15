@@ -6,6 +6,8 @@ import setAuthToken from './setAuthToken';
 interface IUser {
   id: string;
   username: string;
+  email: string;
+  created_at: string;
 }
 
 export interface IProvider {
@@ -14,6 +16,7 @@ export interface IProvider {
   user: IUser | null;
   loadUser: () => void;
   login: (username: string, password: string) => void;
+  signup: (username: string, email: string, password: string) => void;
   logout: () => void;
 }
 
@@ -75,6 +78,35 @@ const AuthState = (props: any) => {
     }
   };
 
+  const signup = async (username: string, email: string, password: string) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/signup`,
+        {
+          username,
+          email,
+          password,
+        },
+        config
+      );
+
+      dispatch({
+        type: 'LOGIN',
+        payload: result.data,
+      });
+
+      loadUser();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const logout = () => {
     dispatch({
       type: 'LOGOUT',
@@ -89,6 +121,7 @@ const AuthState = (props: any) => {
         user: state.user,
         loadUser,
         login,
+        signup,
         logout,
       }}
     >
