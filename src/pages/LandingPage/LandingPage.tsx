@@ -7,9 +7,9 @@ const LandingPage = () => {
   return (
     <>
       <section className="hero is-large hero-bg">
-        <div className="hero-body">
-          <p className="title has-text-black-ter">Primary hero</p>
-          <p className="subtitle has-text-black-ter">Primary subtitle</p>
+        <div className="hero-body bg-light">
+          <p className="title has-text-danger is-size-1">Primary hero</p>
+          <p className="subtitle has-text-dark is-size-3">Primary subtitle</p>
           <Link to="/signup" className="button is-danger">
             Start Now
           </Link>

@@ -4,6 +4,7 @@ import { parseDate } from '../util/time';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import { ISet, IWorkout } from './WorkoutList';
+import Sets from '../components/Sets';
 
 dotenv.config();
 
@@ -18,8 +19,8 @@ const Workout = (props: any) => {
     axios
       .get(`${process.env.REACT_APP_API_BASE_URL}/workouts/${id}`)
       .then(res => {
-        setWorkout(res.data);
-        setEditedWorkout(res.data);
+        setWorkout({ ...res.data });
+        setEditedWorkout({ ...res.data });
       })
       .catch(err => console.log(err));
     // eslint-disable-next-line
@@ -40,52 +41,101 @@ const Workout = (props: any) => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     setEditState(!editState);
+    setEditedWorkout({ ...workout } as IWorkout); // restore
   };
 
-  const renderSets = (sets: ISet[]) => {
-    return sets.map((set: ISet, index) => {
-      if (sets.length > 1) {
-        if (
-          index === 0 ||
-          set.movement_name !== sets[index - 1].movement_name
-        ) {
-          return (
-            <div key={set.set_id} className={index !== 0 ? 'mt-3' : ''}>
-              <h5 className="subtitle is-5 mb-1">{set.movement_name}</h5>
-              <li>
-                {set.reps} x {set.weight} kg
-              </li>
-            </div>
-          );
+  const handleValueChange = (e: any) => {
+    const targetName = e.target.name;
+    const value = e.target.value;
+
+    // TODO
+    // Maybe other things as well
+    if (!value) {
+      e.target.value = '';
+    }
+
+    if (targetName === 'workoutName') {
+      setEditedWorkout({
+        ...editedWorkout,
+        workout_name: value,
+      } as IWorkout);
+      return;
+    }
+
+    const setId = e.target.parentNode.getAttribute('id') as string;
+
+    let newSets;
+    if (targetName === 'movementName') {
+      const originalName = editedWorkout?.sets.find(
+        set => String(set.set_id) === setId
+      )?.movement_name;
+
+      newSets = editedWorkout?.sets.map((set: ISet) => {
+        const setCopy = { ...set };
+        if (setCopy.movement_name === originalName) {
+          setCopy.movement_name = value;
         }
-      }
+        return setCopy;
+      });
+    } else if (targetName === 'reps') {
+      newSets = workout?.sets.map((set: ISet) => {
+        const setCopy = { ...set };
+        if (String(setCopy.set_id) === setId) {
+          setCopy.reps = parseInt(value);
+        }
+        return setCopy;
+      });
+    } else if (targetName === 'weight') {
+      newSets = workout?.sets.map((set: ISet) => {
+        const setCopy = { ...set };
+        if (String(setCopy.set_id) === setId) {
+          setCopy.weight = parseInt(value);
+        }
+        return setCopy;
+      });
+    }
 
-      return (
-        <li key={set.set_id}>
-          {set.reps} x {set.weight} kg
-        </li>
-      );
-    });
+    setEditedWorkout({
+      ...editedWorkout,
+      sets: newSets,
+    } as IWorkout);
   };
+
+  const debug = true;
 
   return (
     <div className="container mt-5">
       <div className="card p-5">
+        {debug && (
+          <pre>{JSON.stringify(editedWorkout).split(',').join(',\n')}</pre>
+        )}
+
         {workout &&
+          editedWorkout &&
           (editState ? (
             <>
               <div className="is-flex is-justify-content-space-between">
                 <div>
                   <input
                     className="input mb-1"
-                    placeholder={workout.workout_name}
+                    id="workoutName"
+                    name="workoutName"
+                    placeholder={editedWorkout.workout_name}
+                    onChange={handleValueChange}
                   />
                   <input
                     className="input"
-                    placeholder={parseDate(workout.workout_created_at)}
+                    disabled
+                    value={parseDate(editedWorkout.workout_created_at)}
                   />
                 </div>
                 <div>
+                  <button
+                    className="button is-success mr-2"
+                    onClick={handleEditState}
+                  >
+                    Save
+                  </button>
                   <button
                     className="button is-info mr-2"
                     onClick={handleEditState}
@@ -99,33 +149,42 @@ const Workout = (props: any) => {
               </div>
 
               <ul>
-                {workout.sets.map((set: ISet, index) => {
-                  if (workout.sets.length > 1) {
+                {editedWorkout.sets.map((set: ISet, index) => {
+                  if (editedWorkout.sets.length > 0) {
                     if (
                       index === 0 ||
                       set.movement_name !==
-                        workout.sets[index - 1].movement_name
+                        editedWorkout.sets[index - 1].movement_name
                     ) {
                       return (
                         <div
                           key={set.set_id}
+                          id={set.set_id}
                           className={index !== 0 ? 'mt-3' : ''}
+                          onChange={handleValueChange}
                         >
                           <input
                             className="input is-5 mb-1"
+                            name="movementName"
                             placeholder={set.movement_name}
                             style={inputWidth}
                           />
 
-                          <li key={set.set_id}>
+                          <li key={set.set_id} id={set.set_id}>
                             <input
+                              type="number"
+                              min="0"
                               className="input"
+                              name="reps"
                               placeholder={set.reps.toString()}
                               style={inputWidth}
                             />{' '}
                             x{' '}
                             <input
+                              type="number"
+                              min="0"
                               className="input"
+                              name="weight"
                               placeholder={set.weight.toString()}
                               style={inputWidth}
                             />{' '}
@@ -137,15 +196,25 @@ const Workout = (props: any) => {
                   }
 
                   return (
-                    <li key={set.set_id}>
+                    <li
+                      key={set.set_id}
+                      id={set.set_id}
+                      onChange={handleValueChange}
+                    >
                       <input
+                        type="number"
+                        min="0"
                         className="input"
+                        name="reps"
                         placeholder={set.reps.toString()}
                         style={inputWidth}
                       />{' '}
                       x{' '}
                       <input
+                        type="number"
+                        min="0"
                         className="input"
+                        name="weight"
                         placeholder={set.weight.toString()}
                         style={inputWidth}
                       />{' '}
@@ -176,7 +245,7 @@ const Workout = (props: any) => {
               </div>
 
               <div className="mt-5">
-                <ul>{renderSets(workout.sets)}</ul>
+                <Sets sets={workout.sets} />
               </div>
             </>
           ))}

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { parseDate } from '../util/time';
 
 import dotenv from 'dotenv';
+import Sets from '../components/Sets';
 dotenv.config();
 
 export interface ISet {
@@ -31,32 +32,6 @@ const WorkoutList = () => {
       .catch(err => console.log(err));
   }, []);
 
-  const renderSets = (sets: ISet[]) => {
-    return sets.map((set: ISet, index) => {
-      if (sets.length > 1) {
-        if (
-          index === 0 ||
-          set.movement_name !== sets[index - 1].movement_name
-        ) {
-          return (
-            <div key={set.set_id} className={index !== 0 ? 'mt-3' : ''}>
-              <h5 className="subtitle is-5 mb-1">{set.movement_name}</h5>
-              <li>
-                {set.reps} x {set.weight} kg
-              </li>
-            </div>
-          );
-        }
-      }
-
-      return (
-        <li key={set.set_id}>
-          {set.reps} x {set.weight} kg
-        </li>
-      );
-    });
-  };
-
   return (
     <div className="container mt-5">
       <h1 className="title has-text-centered">My Workouts</h1>
@@ -81,8 +56,7 @@ const WorkoutList = () => {
                   <i className="fas fa-2x fa-eye"></i>
                 </Link>
               </div>
-
-              <ul>{item.sets && renderSets(item.sets)}</ul>
+              <Sets sets={item.sets} />
             </div>
           );
         })}
