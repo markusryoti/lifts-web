@@ -78,7 +78,7 @@ const Workout = (props: any) => {
         return setCopy;
       });
     } else if (targetName === 'reps') {
-      newSets = workout?.sets.map((set: ISet) => {
+      newSets = editedWorkout?.sets.map((set: ISet) => {
         const setCopy = { ...set };
         if (String(setCopy.set_id) === setId) {
           setCopy.reps = parseInt(value);
@@ -86,7 +86,7 @@ const Workout = (props: any) => {
         return setCopy;
       });
     } else if (targetName === 'weight') {
-      newSets = workout?.sets.map((set: ISet) => {
+      newSets = editedWorkout?.sets.map((set: ISet) => {
         const setCopy = { ...set };
         if (String(setCopy.set_id) === setId) {
           setCopy.weight = parseInt(value);
@@ -99,6 +99,86 @@ const Workout = (props: any) => {
       ...editedWorkout,
       sets: newSets,
     } as IWorkout);
+  };
+
+  const handleSetDelete = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const setId = e.currentTarget.parentElement?.getAttribute('id');
+    axios
+      .delete(
+        `${process.env.REACT_APP_API_BASE_URL}/workouts/${id}/sets/${setId}`
+      )
+      .then(res => {
+        if (res.status === 200) {
+          if (editedWorkout && workout) {
+            const newSets: Array<ISet> = editedWorkout.sets.filter(
+              (set: ISet) => {
+                const setCopy = { ...set };
+                if (String(setCopy.set_id) === setId) {
+                  return false;
+                }
+                return true;
+              }
+            );
+            setEditedWorkout({
+              ...editedWorkout,
+              sets: newSets,
+            });
+            axios
+              .get(`${process.env.REACT_APP_API_BASE_URL}/workouts/${id}`)
+              .then(res => {
+                setWorkout({ ...res.data });
+              })
+              .catch(err => console.log(err));
+          }
+        }
+      })
+      .catch(err => console.error(err));
+  };
+
+  const handleMovementDelete = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const setId = e.currentTarget.parentElement?.getAttribute('id');
+    const searchedMovementName = editedWorkout?.sets.find(
+      set => String(set.set_id) === setId
+    )?.movement_name;
+
+    let newSets: Array<ISet>;
+    if (workout && editedWorkout) {
+      newSets = editedWorkout?.sets.filter(
+        (set: ISet) => set.movement_name !== searchedMovementName
+      );
+    }
+
+    axios
+      .delete(
+        `${process.env.REACT_APP_API_BASE_URL}/workouts/${id}/sets/${searchedMovementName}`
+      )
+      .then(res => {
+        if (res.status === 200) {
+          setEditedWorkout({
+            ...editedWorkout,
+            sets: newSets,
+          } as IWorkout);
+        }
+      })
+      .catch(err => console.error(err));
+  };
+
+  const handleSave = () => {
+    axios
+      .put(
+        `${process.env.REACT_APP_API_BASE_URL}/workouts/${id}`,
+        editedWorkout
+      )
+      .then(res => {
+        if (res.status === 200) {
+          props.history.push('/workouts');
+        }
+      })
+      .catch(err => console.error(err));
   };
 
   const debug = true;
@@ -132,7 +212,7 @@ const Workout = (props: any) => {
                 <div>
                   <button
                     className="button is-success mr-2"
-                    onClick={handleEditState}
+                    onClick={handleSave}
                   >
                     Save
                   </button>
@@ -170,6 +250,13 @@ const Workout = (props: any) => {
                             style={inputWidth}
                           />
 
+                          <button
+                            className="button is-danger is-small"
+                            onClick={handleMovementDelete}
+                          >
+                            Remove Movement <i className="fas fa-trash-alt"></i>
+                          </button>
+
                           <li key={set.set_id} id={set.set_id}>
                             <input
                               type="number"
@@ -188,7 +275,13 @@ const Workout = (props: any) => {
                               placeholder={set.weight.toString()}
                               style={inputWidth}
                             />{' '}
-                            kg
+                            kg{' '}
+                            <button
+                              className="button is-danger is-small"
+                              onClick={handleSetDelete}
+                            >
+                              <i className="fas fa-trash-alt"></i>
+                            </button>
                           </li>
                         </div>
                       );
@@ -219,6 +312,12 @@ const Workout = (props: any) => {
                         style={inputWidth}
                       />{' '}
                       kg{' '}
+                      <button
+                        className="button is-danger is-small"
+                        onClick={handleSetDelete}
+                      >
+                        <i className="fas fa-trash-alt"></i>
+                      </button>
                     </li>
                   );
                 })}
