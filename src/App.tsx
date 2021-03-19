@@ -14,6 +14,7 @@ import Logout from './pages/Logout';
 import Profile from './pages/Profile';
 import LandingPage from './pages/LandingPage/LandingPage';
 import Workout from './pages/Workout';
+import Footer from './components/Footer';
 
 if (localStorage.lifts_token) {
   setAuthToken(localStorage.lifts_token);
@@ -34,6 +35,7 @@ function App() {
           <PrivateRoute path="/workouts/:id" component={Workout} />
           <Route exact path="/" component={LandingPage} />
         </Switch>
+        <Footer />
       </AuthState>
     </Router>
   );
