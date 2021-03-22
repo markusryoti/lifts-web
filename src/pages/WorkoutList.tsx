@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { parseDate } from '../util/time';
 
 import dotenv from 'dotenv';
-import Sets from '../components/Sets';
+import Movements from '../components/Movements';
+
 dotenv.config();
 
 export interface ISet {
@@ -15,11 +16,15 @@ export interface ISet {
   set_created_at: string;
 }
 
+export interface IWorkoutMovements {
+  [name: string]: Array<ISet>;
+}
+
 export interface IWorkout {
   workout_id: string;
   workout_name: string;
   workout_created_at: string;
-  sets: ISet[];
+  movements: IWorkoutMovements;
 }
 
 const WorkoutList = () => {
@@ -44,19 +49,19 @@ const WorkoutList = () => {
       </div>
 
       {workouts &&
-        workouts.map((item: IWorkout) => {
+        workouts.map((workout: IWorkout) => {
           return (
-            <div className="box" key={item.workout_id}>
+            <div className="box" key={workout.workout_id}>
               <div className="is-flex is-justify-content-space-between">
                 <div className="mb-5">
-                  <h4 className="title is-4 mb-1">{item.workout_name}</h4>
-                  <p>{parseDate(item.workout_created_at)}</p>
+                  <h4 className="title is-4 mb-1">{workout.workout_name}</h4>
+                  <p>{parseDate(workout.workout_created_at)}</p>
                 </div>
-                <Link to={`/workouts/${item.workout_id}`}>
+                <Link to={`/workouts/${workout.workout_id}`}>
                   <i className="fas fa-2x fa-eye"></i>
                 </Link>
               </div>
-              <Sets sets={item.sets} />
+              <Movements movements={workout.movements} />
             </div>
           );
         })}

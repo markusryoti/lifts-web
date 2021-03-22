@@ -15,7 +15,7 @@ export interface IProvider {
   isAuthenticated: boolean;
   user: IUser | null;
   loadUser: () => void;
-  login: (username: string, password: string) => void;
+  login: (loginValue: string, password: string) => void;
   signup: (username: string, email: string, password: string) => void;
   logout: () => void;
 }
@@ -30,13 +30,11 @@ const AuthState = (props: any) => {
   };
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Load User
   const loadUser = async () => {
     if (localStorage.lifts_token) {
       setAuthToken(localStorage.lifts_token);
     }
 
-    // Get user stuff from api
     try {
       const result = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}/users`
@@ -50,7 +48,7 @@ const AuthState = (props: any) => {
     }
   };
 
-  const login = async (username: string, password: string) => {
+  const login = async (loginValue: string, password: string) => {
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -61,7 +59,7 @@ const AuthState = (props: any) => {
       const result = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/login`,
         {
-          username,
+          loginValue,
           password,
         },
         config

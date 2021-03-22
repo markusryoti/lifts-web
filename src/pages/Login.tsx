@@ -5,7 +5,7 @@ import { AuthContext, IProvider } from '../context/auth/AuthState';
 dotenv.config();
 
 interface IFormState {
-  loginvalue: string | null;
+  loginValue: string | null;
   password: string | null;
 }
 
@@ -16,7 +16,7 @@ const Login = (props: any) => {
   const { isAuthenticated, login } = authContext as IProvider;
 
   const [userInfo, setUserInfo] = useState<IFormState>({
-    loginvalue: null,
+    loginValue: null,
     password: null,
   });
 
@@ -37,15 +37,15 @@ const Login = (props: any) => {
 
   const onFormSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    const { loginvalue, password } = userInfo;
+    const { loginValue, password } = userInfo;
 
-    if (!loginvalue || !password) {
-      console.error('Need both login values');
+    if (!loginValue || !password) {
+      alert('Need both login values');
       return;
     }
 
     // Login
-    login(loginvalue as string, password as string);
+    login(loginValue as string, password as string);
   };
 
   return (
@@ -56,7 +56,7 @@ const Login = (props: any) => {
           <input
             className="input"
             type="text"
-            name="loginvalue"
+            name="loginValue"
             onChange={onFormChange}
           />
           <span className="icon is-small is-left">
