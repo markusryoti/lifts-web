@@ -17,7 +17,7 @@ const LandingPage = () => {
       </section>
       <div>
         <div>
-          <p>
+          <p className="ml-2">
             Photo by{' '}
             <a href="https://unsplash.com/@victorfreitas?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
               Victor Freitas
@@ -35,7 +35,10 @@ const LandingPage = () => {
                 src="https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
                 alt=""
               />
-              <a href="https://unsplash.com/photos/optBC2FxCfc">
+              <a
+                className="ml-2"
+                href="https://unsplash.com/photos/optBC2FxCfc"
+              >
                 Selina Selke by Sven Mieke
               </a>
             </div>
