@@ -1,46 +1,20 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { ISet, IWorkout } from '../pages/WorkoutList';
+import { IWorkout } from '../pages/WorkoutList';
 import { parseDate } from '../util/time';
+import SetEditItem from './SetEditItem';
 
 interface Props {
   workoutCopy: any;
   handleEditState: any;
 }
 
-const SetEditItem = ({ set }: any) => {
-  return (
-    <li key={set.set_id} id={set.set_id} onChange={() => {}}>
-      <input
-        type="number"
-        min="0"
-        className="input"
-        name="reps"
-        placeholder={set.reps.toString()}
-        style={inputWidth}
-      />{' '}
-      x{' '}
-      <input
-        type="number"
-        min="0"
-        className="input"
-        name="weight"
-        placeholder={set.weight.toString()}
-        style={inputWidth}
-      />{' '}
-      kg{' '}
-      <button className="button is-danger is-small" onClick={() => {}}>
-        <i className="fas fa-times"></i>
-      </button>
-    </li>
-  );
-};
-
 const EditView = ({ workoutCopy, handleEditState }: Props) => {
   const [editedWorkout, setEditedWorkout] = useState<IWorkout>(workoutCopy);
 
   return (
     <>
+      {1 && <pre>{JSON.stringify(editedWorkout).split(',').join(',\n')}</pre>}
       <div className="is-flex is-justify-content-space-between">
         <div>
           <input
@@ -84,7 +58,13 @@ const EditView = ({ workoutCopy, handleEditState }: Props) => {
                   <h5 className="title is-5 mb-2 mt-2">{movement}</h5>
                   {editedWorkout?.movements[movement].map((set: any) => {
                     return (
-                      <SetEditItem key={set.set_id} id={set.set_id} set={set} />
+                      <SetEditItem
+                        key={set.set_id}
+                        id={set.set_id}
+                        set={set}
+                        editedWorkout={editedWorkout}
+                        setEditedWorkout={setEditedWorkout}
+                      />
                     );
                   })}
                 </div>
@@ -95,10 +75,6 @@ const EditView = ({ workoutCopy, handleEditState }: Props) => {
       </div>
     </>
   );
-};
-
-const inputWidth = {
-  width: '100px',
 };
 
 export default EditView;

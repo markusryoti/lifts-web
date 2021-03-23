@@ -3,7 +3,7 @@ import { parseDate } from '../util/time';
 
 import dotenv from 'dotenv';
 import axios from 'axios';
-import { ISet, IWorkout } from './WorkoutList';
+import { IWorkout } from './WorkoutList';
 import EditView from '../components/EditView';
 import Movements from '../components/Movements';
 
@@ -36,8 +36,6 @@ const Workout = (props: any) => {
   return (
     <div className="container mt-5">
       <div className="card p-5">
-        {debug && <pre>{JSON.stringify(workout).split(',').join(',\n')}</pre>}
-
         {workout &&
           (editState ? (
             <EditView
@@ -46,6 +44,9 @@ const Workout = (props: any) => {
             />
           ) : (
             <>
+              {debug && (
+                <pre>{JSON.stringify(workout).split(',').join(',\n')}</pre>
+              )}
               <div className="is-flex is-justify-content-space-between">
                 <div>
                   <h4 className="title is-4 mb-1">{workout.workout_name}</h4>
