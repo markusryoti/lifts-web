@@ -25,13 +25,24 @@ const Workout = (props: any) => {
     // eslint-disable-next-line
   }, []);
 
-  const handleEditState = (
+  const toggleEditState = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     setEditState(!editState);
   };
 
-  const debug = true;
+  const handleWorkoutDelete = () => {
+    axios
+      .delete(
+        `${process.env.REACT_APP_API_BASE_URL}/workouts/${workout?.workout_id}`
+      )
+      .then(res => {
+        if (res.status === 200) {
+          props.history.push('/workouts');
+        }
+      })
+      .catch(err => console.error(err));
+  };
 
   return (
     <div className="container mt-5">
@@ -40,12 +51,16 @@ const Workout = (props: any) => {
           (editState ? (
             <EditView
               workoutCopy={{ ...workout }}
-              handleEditState={handleEditState}
+              toggleEditState={toggleEditState}
+              setWorkout={setWorkout}
+              handleWorkoutDelete={handleWorkoutDelete}
             />
           ) : (
             <>
-              {debug && (
-                <pre>{JSON.stringify(workout).split(',').join(',\n')}</pre>
+              {1 && (
+                <pre>
+                  WORKOUT {JSON.stringify(workout).split(',').join(',\n')}
+                </pre>
               )}
               <div className="is-flex is-justify-content-space-between">
                 <div>
@@ -55,15 +70,13 @@ const Workout = (props: any) => {
                 <div>
                   <button
                     className="button is-warning mr-2"
-                    onClick={handleEditState}
+                    onClick={toggleEditState}
                   >
                     <i className="fas fa-pencil-alt"></i>
                   </button>
                   <button
                     className="button is-danger"
-                    onClick={() => {
-                      console.log('deleting workout');
-                    }}
+                    onClick={handleWorkoutDelete}
                   >
                     <i className="fas fa-trash-alt"></i>
                   </button>
