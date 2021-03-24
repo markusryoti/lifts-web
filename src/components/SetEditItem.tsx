@@ -23,6 +23,7 @@ const SetEditItem = ({
     const updatedWorkoutMovements: IWorkoutMovements = JSON.parse(
       JSON.stringify(editedWorkout.movements)
     );
+
     const newSets: Array<ISet> = updatedWorkoutMovements[
       set.movement_name
     ].filter((set: ISet) => {
@@ -63,23 +64,23 @@ const SetEditItem = ({
   };
 
   const updateSetValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const setId = set.set_id;
+    const setId = parseInt(set.set_id);
     const valueType = e.currentTarget.name;
     const value = parseInt(e.currentTarget.value);
 
-    // Hack for deep copy
-    const updatedWorkout: IWorkout = JSON.parse(JSON.stringify(editedWorkout));
+    const updatedWorkout: IWorkout = { ...editedWorkout };
 
     Object.keys(editedWorkout?.movements).forEach((movement: string) => {
       const newMovementSets = editedWorkout?.movements[movement].map(
         (set: ISet) => {
-          if (set.set_id === setId) {
+          const setCopy = { ...set };
+          if (parseInt(set.set_id) === setId) {
             return {
-              ...set,
+              ...setCopy,
               [valueType]: value,
             };
           }
-          return set;
+          return setCopy;
         }
       );
       updatedWorkout.movements[movement] = newMovementSets;

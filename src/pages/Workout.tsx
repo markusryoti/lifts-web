@@ -6,11 +6,12 @@ import axios from 'axios';
 import { IWorkout } from './WorkoutList';
 import EditView from '../components/EditView';
 import Movements from '../components/Movements';
+import { useParams } from 'react-router-dom';
 
 dotenv.config();
 
 const Workout = (props: any) => {
-  const { id } = props.match.params;
+  let { id } = useParams<{ id: string }>();
 
   const [editState, setEditState] = useState<boolean>(false);
   const [workout, setWorkout] = useState<IWorkout | null>(null);

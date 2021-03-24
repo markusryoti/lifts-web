@@ -1,27 +1,28 @@
 import axios from 'axios';
-import React, { useState } from 'react';
-import { IWorkout } from '../pages/WorkoutList';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { ISet, IWorkout } from '../pages/WorkoutList';
 import { parseDate } from '../util/time';
 import SetEditItem from './SetEditItem';
 
 interface Props {
-  history?: any; // React router
   workoutCopy: any;
   toggleEditState: any;
   setWorkout: React.Dispatch<React.SetStateAction<IWorkout | null>>;
   handleWorkoutDelete: () => void;
 }
 
-const EditView = ({
+const EditView: React.FC<Props> = ({
   workoutCopy,
   toggleEditState,
   setWorkout,
   handleWorkoutDelete,
-  history,
-}: Props) => {
+}) => {
   const [editedWorkout, setEditedWorkout] = useState<IWorkout>({
     ...workoutCopy,
   });
+
+  let history = useHistory();
 
   const handleSave = () => {
     axios
@@ -37,11 +38,47 @@ const EditView = ({
       .catch(err => console.error(err));
   };
 
+  const handleWorkoutNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.currentTarget.value;
+    setEditedWorkout({ ...editedWorkout, workout_name: newName });
+  };
+
+  const handleMovementNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.currentTarget.getElementsByTagName('input')[0].value;
+    const lis = e.currentTarget.getElementsByTagName('li');
+
+    const setIdsToUpdate: number[] = [];
+    for (let i = 0; i < lis.length; i++) {
+      setIdsToUpdate.push(parseInt(lis[i].id));
+    }
+
+    const updatedWorkout: IWorkout = JSON.parse(JSON.stringify(editedWorkout));
+    Object.keys(editedWorkout.movements).forEach((movement: string) => {
+      const newMovementSets = editedWorkout.movements[movement].map(
+        (set: ISet) => {
+          if (setIdsToUpdate.includes(parseInt(set.set_id))) {
+            return {
+              ...set,
+              movement_name: inputValue,
+              user_movement_id: null,
+            };
+          }
+          return set;
+        }
+      );
+      updatedWorkout.movements[movement] = newMovementSets;
+    });
+
+    setEditedWorkout(updatedWorkout);
+  };
+
   return (
     <>
       {1 && (
         <pre>
-          EDITVIEW {JSON.stringify(editedWorkout).split(',').join(',\n')}
+          EDITVIEW{' '}
+          {editedWorkout &&
+            JSON.stringify(editedWorkout).split(',').join(',\n')}
         </pre>
       )}
       <div className="is-flex is-justify-content-space-between">
@@ -51,10 +88,15 @@ const EditView = ({
             id="workoutName"
             name="workoutName"
             placeholder={editedWorkout?.workout_name}
+            onChange={handleWorkoutNameChange}
           />
-          <h6 className="subtitle is-6">
-            {editedWorkout ? parseDate(editedWorkout?.workout_created_at) : ''}
-          </h6>
+          <input
+            disabled
+            className="input is-6"
+            placeholder={
+              editedWorkout ? parseDate(editedWorkout?.workout_created_at) : ''
+            }
+          />
         </div>
         <div>
           <button className="button is-success mr-2" onClick={handleSave}>
@@ -73,8 +115,15 @@ const EditView = ({
           {Object.keys(editedWorkout?.movements).map(
             (movement: string, index: number) => {
               return (
-                <div key={`${movement}-${index}`}>
-                  <h5 className="title is-5 mb-2 mt-2">{movement}</h5>
+                <div
+                  key={`${movement}-${index}`}
+                  onChange={handleMovementNameChange}
+                >
+                  <input
+                    name="movementName"
+                    className="input is-5 mb-2 mt-2"
+                    placeholder={movement}
+                  />
                   {editedWorkout?.movements[movement].map((set: any) => {
                     return (
                       <SetEditItem
