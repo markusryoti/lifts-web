@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { IMovementSection, ISet } from '../pages/NewWorkout';
+import { IMovementSection, INewSet } from '../pages/NewWorkout';
 
 interface Props {
   movementItem: IMovementSection;
   itemIndex: number;
   handleRemove: (index: number) => void;
   handleWorkoutMovementNameUpdate: (index: number, name: string) => void;
-  handleWorkoutMovementSetUpdate: (index: number, sets: ISet[]) => void;
+  handleWorkoutMovementSetUpdate: (index: number, sets: INewSet[]) => void;
 }
 
 const NewMovementSection: React.FC<Props> = ({
@@ -17,7 +17,7 @@ const NewMovementSection: React.FC<Props> = ({
   handleWorkoutMovementSetUpdate,
 }): JSX.Element => {
   const [name, setName] = useState<string>('');
-  const [sets, setSets] = useState<ISet[]>([]);
+  const [sets, setSets] = useState<INewSet[]>([]);
 
   useEffect(() => {
     if (movementItem.name) setName(movementItem.name);
@@ -91,7 +91,7 @@ const NewMovementSection: React.FC<Props> = ({
 
   return (
     <div className="box mt-3 ml-3 mb-4 is-flex-direction-column">
-      <div className="is-flex is-flex-direction-row is-align-items-center mb-2">
+      <div className="is-flex is-flex-direction-row is-align-items-center mb-1">
         <input
           type="text"
           name="movementName"
@@ -112,7 +112,7 @@ const NewMovementSection: React.FC<Props> = ({
       <hr />
 
       {sets &&
-        sets.map((item: ISet, index: number) => {
+        sets.map((item: INewSet, index: number) => {
           return (
             <div
               key={index}

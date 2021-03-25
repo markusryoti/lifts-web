@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ISet, IWorkout } from '../pages/WorkoutList';
 import { parseDate } from '../util/time';
@@ -43,9 +43,41 @@ const EditView: React.FC<Props> = ({
     setEditedWorkout({ ...editedWorkout, workout_name: newName });
   };
 
+  const addSet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const movementName = e.currentTarget.previousElementSibling?.getAttribute(
+      'placeholder'
+    );
+    if (!movementName) return;
+
+    const userMovementId =
+      editedWorkout.movements[movementName][0].user_movement_id;
+
+    axios
+      .post(
+        `${process.env.REACT_APP_API_BASE_URL}/workouts/${editedWorkout.workout_id}/sets`,
+        { reps: 0, weight: 0, userMovementId }
+      )
+      .then(res => {
+        if (res.status === 200) {
+          const updatedWorkout: IWorkout = { ...editedWorkout };
+          updatedWorkout.movements[movementName].push({
+            ...res.data,
+            movement_name: movementName,
+          });
+          setEditedWorkout(updatedWorkout);
+        }
+      })
+      .catch(err => console.error(err));
+  };
+
   const handleMovementNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.currentTarget.getElementsByTagName('input')[0].value;
-    const lis = e.currentTarget.getElementsByTagName('li');
+
+    const lis = e.currentTarget.parentElement?.getElementsByTagName('li');
+
+    // Since lis can in theory be undefined
+    // This shouldn't ever be an issue
+    if (!lis) return;
 
     const setIdsToUpdate: number[] = [];
     for (let i = 0; i < lis.length; i++) {
@@ -72,19 +104,21 @@ const EditView: React.FC<Props> = ({
     setEditedWorkout(updatedWorkout);
   };
 
+  const debugJson = false;
+
   return (
     <>
-      {1 && (
+      {debugJson && (
         <pre>
           EDITVIEW{' '}
           {editedWorkout &&
             JSON.stringify(editedWorkout).split(',').join(',\n')}
         </pre>
       )}
-      <div className="is-flex is-justify-content-space-between">
-        <div>
+      <div className="is-flex is-flex-wrap-wrap mt-2 mb-5">
+        <div className="p-1 is-flex-grow-2 is-flex-wrap-wrap">
           <input
-            className="input mb-1"
+            className="input mb-1 mr-2"
             id="workoutName"
             name="workoutName"
             placeholder={editedWorkout?.workout_name}
@@ -92,7 +126,7 @@ const EditView: React.FC<Props> = ({
           />
           <input
             disabled
-            className="input is-6"
+            className="input"
             placeholder={
               editedWorkout ? parseDate(editedWorkout?.workout_created_at) : ''
             }
@@ -110,32 +144,43 @@ const EditView: React.FC<Props> = ({
           </button>
         </div>
       </div>
+
+      <hr />
+
       <div>
         <ul>
           {Object.keys(editedWorkout?.movements).map(
             (movement: string, index: number) => {
               return (
-                <div
-                  key={`${movement}-${index}`}
-                  onChange={handleMovementNameChange}
-                >
-                  <input
-                    name="movementName"
-                    className="input is-5 mb-2 mt-2"
-                    placeholder={movement}
-                  />
-                  {editedWorkout?.movements[movement].map((set: any) => {
-                    return (
-                      <SetEditItem
-                        key={set.set_id}
-                        id={set.set_id}
-                        set={set}
-                        editedWorkout={editedWorkout}
-                        setEditedWorkout={setEditedWorkout}
-                        setWorkout={setWorkout}
-                      />
-                    );
-                  })}
+                <div className="mb-5" key={`${movement}-${index}`}>
+                  <div
+                    onChange={handleMovementNameChange}
+                    className="is-flex is-align-items-center is-flex-wrap-wrap mb-2"
+                  >
+                    <input
+                      name="movementName"
+                      className="input is-5 mb-2 mt-2 mr-2 is-flex-grow-2"
+                      placeholder={movement}
+                    />
+                    <button className="button is-link" onClick={addSet}>
+                      Add Set
+                      <i className=" ml-1 fas fa-plus-circle" />
+                    </button>
+                  </div>
+                  <div className="pb-4">
+                    {editedWorkout?.movements[movement].map((set: any) => {
+                      return (
+                        <SetEditItem
+                          key={set.set_id}
+                          id={set.set_id}
+                          set={set}
+                          editedWorkout={editedWorkout}
+                          setEditedWorkout={setEditedWorkout}
+                          setWorkout={setWorkout}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
               );
             }

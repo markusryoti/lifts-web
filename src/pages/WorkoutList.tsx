@@ -13,6 +13,7 @@ export interface ISet {
   reps: number;
   weight: number;
   movement_name: string;
+  user_movement_id: string | null;
   set_created_at: string;
 }
 

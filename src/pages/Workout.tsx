@@ -45,6 +45,8 @@ const Workout = (props: any) => {
       .catch(err => console.error(err));
   };
 
+  const debugJson = false;
+
   return (
     <div className="container mt-5">
       <div className="card p-5">
@@ -58,7 +60,7 @@ const Workout = (props: any) => {
             />
           ) : (
             <>
-              {1 && (
+              {debugJson && (
                 <pre>
                   WORKOUT {JSON.stringify(workout).split(',').join(',\n')}
                 </pre>

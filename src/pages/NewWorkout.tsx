@@ -5,14 +5,14 @@ import { RouteComponentProps } from 'react-router-dom';
 import NewMovementSection from '../components/NewMovementSection';
 import { getCurrentDate } from '../util/time';
 
-export interface ISet {
+export interface INewSet {
   reps: number | null;
   weight: number | null;
 }
 
 export interface IMovementSection {
   name: string | null;
-  sets: ISet[] | null;
+  sets: INewSet[] | null;
 }
 
 interface IWorkoutState {
@@ -129,7 +129,7 @@ const NewWorkoutCard: React.FC<Props> = props => {
     setMovementSections(newState);
   };
 
-  const handleWorkoutMovementSetUpdate = (index: number, sets: ISet[]) => {
+  const handleWorkoutMovementSetUpdate = (index: number, sets: INewSet[]) => {
     const newState = [...movementSections];
     newState[index].sets = sets;
     setMovementSections(newState);

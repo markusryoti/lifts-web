@@ -90,11 +90,15 @@ const SetEditItem = ({
   };
 
   return (
-    <li key={set.set_id} id={set.set_id}>
+    <li
+      key={set.set_id}
+      id={set.set_id}
+      className="is-flex is-align-items-center"
+    >
       <input
         type="number"
         min="0"
-        className="input"
+        className="input mr-1 mt-2"
         name="reps"
         placeholder={set.reps.toString()}
         style={inputWidth}
@@ -104,14 +108,17 @@ const SetEditItem = ({
       <input
         type="number"
         min="0"
-        className="input"
+        className="input ml-1 mr-1 mt-2"
         name="weight"
         placeholder={set.weight.toString()}
         style={inputWidth}
         onChange={updateSetValue}
       />{' '}
       kg{' '}
-      <button className="button is-danger is-small" onClick={handleSetDelete}>
+      <button
+        className="button is-danger is-small ml-3 mt-2"
+        onClick={handleSetDelete}
+      >
         <i className="fas fa-times"></i>
       </button>
     </li>
