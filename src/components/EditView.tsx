@@ -44,10 +44,7 @@ const EditView: React.FC<Props> = ({
   };
 
   const addSet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const movementName = e.currentTarget.previousElementSibling?.getAttribute(
-      'placeholder'
-    );
-    if (!movementName) return;
+    const movementName = e.currentTarget.name;
 
     const userMovementId =
       editedWorkout.movements[movementName][0].user_movement_id;
@@ -132,27 +129,25 @@ const EditView: React.FC<Props> = ({
             }
           />
         </div>
-        <div>
+        <div className="is-flex is-align-items-center p-2">
           <button className="button is-success mr-2" onClick={handleSave}>
-            Save
+            <i className="fas fa-save" />
           </button>
           <button className="button is-info mr-2" onClick={toggleEditState}>
-            Discard
+            <i className="fas fa-ban" />
           </button>
           <button className="button is-danger" onClick={handleWorkoutDelete}>
             <i className="fas fa-trash-alt"></i>
           </button>
         </div>
       </div>
-
       <hr />
-
       <div>
         <ul>
           {Object.keys(editedWorkout?.movements).map(
             (movement: string, index: number) => {
               return (
-                <div className="mb-5" key={`${movement}-${index}`}>
+                <div className="card mb-5 p-5" key={`${movement}-${index}`}>
                   <div
                     onChange={handleMovementNameChange}
                     className="is-flex is-align-items-center is-flex-wrap-wrap mb-2"
@@ -162,24 +157,32 @@ const EditView: React.FC<Props> = ({
                       className="input is-5 mb-2 mt-2 mr-2 is-flex-grow-2"
                       placeholder={movement}
                     />
-                    <button className="button is-link" onClick={addSet}>
-                      Add Set
-                      <i className=" ml-1 fas fa-plus-circle" />
-                    </button>
                   </div>
-                  <div className="pb-4">
-                    {editedWorkout?.movements[movement].map((set: any) => {
-                      return (
-                        <SetEditItem
-                          key={set.set_id}
-                          id={set.set_id}
-                          set={set}
-                          editedWorkout={editedWorkout}
-                          setEditedWorkout={setEditedWorkout}
-                          setWorkout={setWorkout}
-                        />
-                      );
-                    })}
+                  <div>
+                    <div className="pb-4">
+                      {editedWorkout?.movements[movement].map((set: any) => {
+                        return (
+                          <SetEditItem
+                            key={set.set_id}
+                            id={set.set_id}
+                            set={set}
+                            editedWorkout={editedWorkout}
+                            setEditedWorkout={setEditedWorkout}
+                            setWorkout={setWorkout}
+                          />
+                        );
+                      })}
+                    </div>
+                    <div>
+                      <button
+                        className="button is-link"
+                        name={movement}
+                        onClick={addSet}
+                      >
+                        Add Set
+                        <i className=" ml-1 fas fa-plus-circle" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               );

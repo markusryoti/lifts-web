@@ -43,7 +43,7 @@ const LandingPage = () => {
               </a>
             </div>
             <div className="column">
-              <p>
+              <p className="p-3">
                 "On the other hand, we denounce with righteous indignation and
                 dislike men who are so beguiled and demoralized by the charms of
                 pleasure of the moment, so blinded by desire, that they cannot
@@ -68,7 +68,7 @@ const LandingPage = () => {
         <section className="mt-5">
           <div className="columns">
             <div className="column">
-              <p>
+              <p className="p-3">
                 "On the other hand, we denounce with righteous indignation and
                 dislike men who are so beguiled and demoralized by the charms of
                 pleasure of the moment, so blinded by desire, that they cannot
