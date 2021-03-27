@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ISet, IWorkout, IWorkoutMovements } from '../pages/WorkoutList';
+import { ISet, IWorkout } from '../pages/WorkoutList';
 
 interface Props {
   key: string;
@@ -17,28 +17,26 @@ const SetEditItem = ({
   setWorkout,
 }: Props) => {
   const handleSetDelete = () => {
+    // eslint-disable-next-line no-restricted-globals
+    const res = confirm('Are you sure? Cannot be reverted');
+    if (!res) return;
+
     const setId = set.set_id;
 
     // Update UI first
-    const updatedWorkoutMovements: IWorkoutMovements = JSON.parse(
-      JSON.stringify(editedWorkout.movements)
-    );
-
-    const newSets: Array<ISet> = updatedWorkoutMovements[
-      set.movement_name
-    ].filter((set: ISet) => {
-      const setCopy = { ...set };
-      if (setCopy.set_id === setId) {
-        return false;
+    const updatedWorkoutSets: Array<ISet> = editedWorkout.sets.filter(
+      (set: ISet) => {
+        const setCopy = { ...set };
+        if (setCopy.set_id === setId) {
+          return false;
+        }
+        return true;
       }
-      return true;
-    });
-
-    updatedWorkoutMovements[set.movement_name] = newSets;
+    );
 
     setEditedWorkout({
       ...editedWorkout,
-      movements: updatedWorkoutMovements,
+      sets: updatedWorkoutSets,
     });
 
     axios
@@ -70,21 +68,18 @@ const SetEditItem = ({
 
     const updatedWorkout: IWorkout = { ...editedWorkout };
 
-    Object.keys(editedWorkout?.movements).forEach((movement: string) => {
-      const newMovementSets = editedWorkout?.movements[movement].map(
-        (set: ISet) => {
-          const setCopy = { ...set };
-          if (parseInt(set.set_id) === setId) {
-            return {
-              ...setCopy,
-              [valueType]: value,
-            };
-          }
-          return setCopy;
-        }
-      );
-      updatedWorkout.movements[movement] = newMovementSets;
+    const newMovementSets = editedWorkout?.sets.map((set: ISet) => {
+      const setCopy = { ...set };
+      if (parseInt(set.set_id) === setId) {
+        return {
+          ...setCopy,
+          [valueType]: value,
+        };
+      }
+      return setCopy;
     });
+
+    updatedWorkout.sets = newMovementSets;
 
     setEditedWorkout(updatedWorkout);
   };

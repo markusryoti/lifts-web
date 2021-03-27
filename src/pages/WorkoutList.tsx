@@ -17,15 +17,11 @@ export interface ISet {
   set_created_at: string;
 }
 
-export interface IWorkoutMovements {
-  [name: string]: Array<ISet>;
-}
-
 export interface IWorkout {
   workout_id: string;
   workout_name: string;
   workout_created_at: string;
-  movements: IWorkoutMovements;
+  sets: Array<ISet>;
 }
 
 const WorkoutList = () => {
@@ -41,14 +37,12 @@ const WorkoutList = () => {
   return (
     <div className="container mt-5">
       <h1 className="title has-text-centered">My Workouts</h1>
-
       <div className="has-text-centered mb-3 is-flex-direction-column">
         <p className="mb-1">Create New</p>
         <Link to="/new">
           <i className="fas fa-3x fa-plus-circle"></i>
         </Link>
       </div>
-
       {workouts &&
         workouts.map((workout: IWorkout) => {
           return (
@@ -62,7 +56,7 @@ const WorkoutList = () => {
                   <i className="fas fa-2x fa-eye"></i>
                 </Link>
               </div>
-              <Movements movements={workout.movements} />
+              <Movements sets={workout.sets} />
             </div>
           );
         })}

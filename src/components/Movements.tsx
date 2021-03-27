@@ -1,21 +1,33 @@
 import React from 'react';
-import { IWorkoutMovements } from '../pages/WorkoutList';
+import { ISet } from '../pages/WorkoutList';
 import Sets from './Sets';
 
 interface Props {
-  movements: IWorkoutMovements;
+  sets: Array<ISet>;
 }
 
-const Movements = ({ movements }: Props) => {
-  const movementNames: Array<string> = Object.keys(movements);
+export const individualSetsToMovementSets = (sets: Array<ISet>) => {
+  const setsByMovement: any = {};
+  for (const set of sets) {
+    if (set.movement_name in setsByMovement) {
+      setsByMovement[set.movement_name].push(set);
+    } else {
+      setsByMovement[set.movement_name] = [set];
+    }
+  }
+  return setsByMovement;
+};
+
+const Movements = ({ sets }: Props) => {
+  const movementSets = individualSetsToMovementSets(sets);
 
   return (
     <>
-      {movementNames.map((movement: string, index: number) => {
+      {Object.keys(movementSets).map((movement: string, index: number) => {
         return (
           <div key={`${movement}-${index}`}>
             <h5 className="title is-5 mb-2 mt-2">{movement}</h5>
-            <Sets sets={movements[movement]} />
+            <Sets sets={movementSets[movement]} />
           </div>
         );
       })}
