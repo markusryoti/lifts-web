@@ -2,7 +2,7 @@ import React from 'react';
 import { ISet } from '../pages/WorkoutList';
 
 interface Props {
-  sets: ISet[];
+  sets: Array<ISet>;
 }
 
 const Sets: React.FC<Props> = ({ sets }) => {

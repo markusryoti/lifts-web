@@ -33,6 +33,10 @@ const Workout = (props: any) => {
   };
 
   const handleWorkoutDelete = () => {
+    // eslint-disable-next-line no-restricted-globals
+    const res = confirm('Are you sure? Cannot be reverted');
+    if (!res) return;
+
     axios
       .delete(
         `${process.env.REACT_APP_API_BASE_URL}/workouts/${workout?.workout_id}`
@@ -53,7 +57,7 @@ const Workout = (props: any) => {
         {workout &&
           (editState ? (
             <EditView
-              workoutCopy={{ ...workout }}
+              workout={workout}
               toggleEditState={toggleEditState}
               setWorkout={setWorkout}
               handleWorkoutDelete={handleWorkoutDelete}
@@ -85,9 +89,8 @@ const Workout = (props: any) => {
                   </button>
                 </div>
               </div>
-
               <div className="mt-5">
-                <Movements movements={workout.movements} />
+                <Movements sets={workout.sets} />
               </div>
             </>
           ))}

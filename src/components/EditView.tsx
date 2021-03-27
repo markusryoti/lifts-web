@@ -3,23 +3,24 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ISet, IWorkout } from '../pages/WorkoutList';
 import { parseDate } from '../util/time';
+import { individualSetsToMovementSets } from './Movements';
 import SetEditItem from './SetEditItem';
 
 interface Props {
-  workoutCopy: any;
+  workout: IWorkout;
   toggleEditState: any;
   setWorkout: React.Dispatch<React.SetStateAction<IWorkout | null>>;
   handleWorkoutDelete: () => void;
 }
 
 const EditView: React.FC<Props> = ({
-  workoutCopy,
+  workout,
   toggleEditState,
   setWorkout,
   handleWorkoutDelete,
 }) => {
   const [editedWorkout, setEditedWorkout] = useState<IWorkout>({
-    ...workoutCopy,
+    ...workout,
   });
 
   let history = useHistory();
@@ -45,9 +46,7 @@ const EditView: React.FC<Props> = ({
 
   const addSet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const movementName = e.currentTarget.name;
-
-    const userMovementId =
-      editedWorkout.movements[movementName][0].user_movement_id;
+    const userMovementId = editedWorkout.sets[0].user_movement_id;
 
     axios
       .post(
@@ -57,7 +56,7 @@ const EditView: React.FC<Props> = ({
       .then(res => {
         if (res.status === 200) {
           const updatedWorkout: IWorkout = { ...editedWorkout };
-          updatedWorkout.movements[movementName].push({
+          updatedWorkout.sets.push({
             ...res.data,
             movement_name: movementName,
           });
@@ -68,40 +67,24 @@ const EditView: React.FC<Props> = ({
   };
 
   const handleMovementNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.currentTarget.getElementsByTagName('input')[0].value;
+    const inputValue = e.currentTarget.value;
+    const oldName = e.currentTarget.name;
 
-    const lis = e.currentTarget.parentElement?.getElementsByTagName('li');
-
-    // Since lis can in theory be undefined
-    // This shouldn't ever be an issue
-    if (!lis) return;
-
-    const setIdsToUpdate: number[] = [];
-    for (let i = 0; i < lis.length; i++) {
-      setIdsToUpdate.push(parseInt(lis[i].id));
-    }
-
-    const updatedWorkout: IWorkout = JSON.parse(JSON.stringify(editedWorkout));
-    Object.keys(editedWorkout.movements).forEach((movement: string) => {
-      const newMovementSets = editedWorkout.movements[movement].map(
-        (set: ISet) => {
-          if (setIdsToUpdate.includes(parseInt(set.set_id))) {
-            return {
-              ...set,
-              movement_name: inputValue,
-              user_movement_id: null,
-            };
-          }
-          return set;
-        }
-      );
-      updatedWorkout.movements[movement] = newMovementSets;
+    const newSets = editedWorkout.sets.map((set: ISet) => {
+      if (set.movement_name === oldName) {
+        return {
+          ...set,
+          movement_name: inputValue,
+        };
+      }
+      return set;
     });
 
-    setEditedWorkout(updatedWorkout);
+    setEditedWorkout({ ...editedWorkout, sets: newSets });
   };
 
-  const debugJson = false;
+  const movementSets = individualSetsToMovementSets(editedWorkout.sets);
+  const debugJson = true;
 
   return (
     <>
@@ -118,14 +101,14 @@ const EditView: React.FC<Props> = ({
             className="input mb-1 mr-2"
             id="workoutName"
             name="workoutName"
-            placeholder={editedWorkout?.workout_name}
+            placeholder={editedWorkout.workout_name}
             onChange={handleWorkoutNameChange}
           />
           <input
             disabled
             className="input"
             placeholder={
-              editedWorkout ? parseDate(editedWorkout?.workout_created_at) : ''
+              editedWorkout ? parseDate(editedWorkout.workout_created_at) : ''
             }
           />
         </div>
@@ -144,23 +127,22 @@ const EditView: React.FC<Props> = ({
       <hr />
       <div>
         <ul>
-          {Object.keys(editedWorkout?.movements).map(
-            (movement: string, index: number) => {
+          {movementSets &&
+            Object.keys(movementSets).map((movement: string, index: number) => {
               return (
-                <div className="card mb-5 p-5" key={`${movement}-${index}`}>
-                  <div
-                    onChange={handleMovementNameChange}
-                    className="is-flex is-align-items-center is-flex-wrap-wrap mb-2"
-                  >
+                <div className="card mb-5 p-5" key={`${index}`}>
+                  <div className="is-flex is-align-items-center is-flex-wrap-wrap mb-2">
                     <input
-                      name="movementName"
+                      name={movement}
+                      // value={movement}
                       className="input is-5 mb-2 mt-2 mr-2 is-flex-grow-2"
                       placeholder={movement}
+                      onChange={handleMovementNameChange}
                     />
                   </div>
                   <div>
                     <div className="pb-4">
-                      {editedWorkout?.movements[movement].map((set: any) => {
+                      {movementSets[movement].map((set: any) => {
                         return (
                           <SetEditItem
                             key={set.set_id}
@@ -186,8 +168,7 @@ const EditView: React.FC<Props> = ({
                   </div>
                 </div>
               );
-            }
-          )}
+            })}
         </ul>
       </div>
     </>

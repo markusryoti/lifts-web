@@ -117,7 +117,7 @@ const NewMovementSection: React.FC<Props> = ({
             <div
               key={index}
               id={String(index)}
-              className="is-flex is-align-items-center field"
+              className="is-flex is-align-items-center field mb-1"
             >
               <div>
                 <input
@@ -141,7 +141,6 @@ const NewMovementSection: React.FC<Props> = ({
                   onChange={handleInputChange}
                 />
               </div>
-
               <button
                 className="button is-danger m-1 is-small"
                 onClick={handleItemClick}

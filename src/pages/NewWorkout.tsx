@@ -68,11 +68,24 @@ const NewWorkoutCard: React.FC<Props> = props => {
     localStorage.removeItem('newWorkoutCache');
   };
 
+  const transformMovementSetsToSets = (
+    movements: Array<IMovementSection>
+  ): Array<INewSet> => {
+    const sets = [];
+    for (const movement of movements) {
+      if (!movement.sets) continue;
+      for (const set of movement.sets) {
+        sets.push({ ...set, movement_name: movement.name });
+      }
+    }
+    return sets;
+  };
+
   const handleSaveWorkout = async () => {
     const newWorkout = {
-      name: workoutName,
-      movements: movementSections,
-      createdAt: createdAt,
+      workout_name: workoutName,
+      sets: transformMovementSetsToSets(movementSections),
+      workout_created_at: createdAt,
     };
 
     try {
