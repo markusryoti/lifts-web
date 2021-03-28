@@ -1,10 +1,12 @@
 import axios from 'axios';
+import { setuid } from 'process';
 import { ISet, IWorkout } from '../pages/WorkoutList';
 
 interface Props {
   key: string;
   id: string;
   set: ISet;
+  setIndex: number;
   editedWorkout: IWorkout;
   setEditedWorkout: React.Dispatch<React.SetStateAction<IWorkout>>;
   setWorkout: React.Dispatch<React.SetStateAction<IWorkout | null>>;
@@ -12,6 +14,7 @@ interface Props {
 
 const SetEditItem = ({
   set,
+  setIndex,
   editedWorkout,
   setEditedWorkout,
   setWorkout,
@@ -62,22 +65,42 @@ const SetEditItem = ({
   };
 
   const updateSetValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const setId = parseInt(set.set_id);
+    let setId = parseInt(set.set_id);
+
+    if (isNaN(setId)) {
+      if (e.currentTarget.parentElement) {
+        setId = parseInt(e.currentTarget.parentElement?.id.replace('new-', '')); // array index
+      } else {
+        return;
+      }
+    }
+
     const valueType = e.currentTarget.name;
     const value = parseInt(e.currentTarget.value);
 
     const updatedWorkout: IWorkout = { ...editedWorkout };
 
-    const newMovementSets = editedWorkout?.sets.map((set: ISet) => {
-      const setCopy = { ...set };
-      if (parseInt(set.set_id) === setId) {
-        return {
-          ...setCopy,
-          [valueType]: value,
-        };
+    const newMovementSets = editedWorkout?.sets.map(
+      (s: ISet, index: number) => {
+        const setCopy = { ...s };
+
+        if (!setCopy.set_id && setCopy.movement_name === set.movement_name) {
+          return {
+            ...setCopy,
+            [valueType]: value,
+          };
+        }
+
+        if (parseInt(setCopy.set_id) === setId) {
+          return {
+            ...setCopy,
+            [valueType]: value,
+          };
+        }
+
+        return setCopy;
       }
-      return setCopy;
-    });
+    );
 
     updatedWorkout.sets = newMovementSets;
 
@@ -87,7 +110,7 @@ const SetEditItem = ({
   return (
     <li
       key={set.set_id}
-      id={set.set_id}
+      id={set.set_id ? set.set_id : 'new-' + setIndex.toString()}
       className="is-flex is-align-items-center"
     >
       <input
