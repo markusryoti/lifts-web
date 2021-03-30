@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { ISet, IWorkout } from '../pages/WorkoutList';
+import { IWorkout, ISet } from '../types';
+import { individualSetsToMovementSets } from '../util/setsToMovements';
 import { parseDate } from '../util/time';
-import { individualSetsToMovementSets } from './Movements';
 import SetEditItem from './SetEditItem';
 
 interface Props {

@@ -3,10 +3,10 @@ import { parseDate } from '../util/time';
 
 import dotenv from 'dotenv';
 import axios from 'axios';
-import { IWorkout } from './WorkoutList';
 import EditView from '../components/EditView';
 import Movements from '../components/Movements';
 import { useParams } from 'react-router-dom';
+import { IWorkout } from '../types';
 
 dotenv.config();
 

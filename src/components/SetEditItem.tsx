@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { setuid } from 'process';
-import { ISet, IWorkout } from '../pages/WorkoutList';
+import { ISet, IWorkout } from '../types';
 
 interface Props {
   key: string;
