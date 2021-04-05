@@ -48,22 +48,22 @@ const EditView: React.FC<Props> = ({
     const movementName = e.currentTarget.name;
     const userMovementId = editedWorkout.sets[0].user_movement_id;
 
-    axios
-      .post(
-        `${process.env.REACT_APP_API_BASE_URL}/workouts/${editedWorkout.workout_id}/sets`,
-        { reps: 0, weight: 0, userMovementId }
-      )
-      .then(res => {
-        if (res.status === 200) {
-          const updatedWorkout: IWorkout = { ...editedWorkout };
-          updatedWorkout.sets.push({
-            ...res.data,
-            movement_name: movementName,
-          });
-          setEditedWorkout(updatedWorkout);
-        }
-      })
-      .catch(err => console.error(err));
+    const newSet: ISet = {
+      movement_name: movementName,
+      set_id: '',
+      reps: 0,
+      weight: 0,
+      user_movement_id: userMovementId,
+      set_created_at: Date.now().toString(),
+    };
+
+    const newSets = [...editedWorkout.sets];
+    newSets.push(newSet);
+
+    setEditedWorkout({
+      ...editedWorkout,
+      sets: newSets,
+    });
   };
 
   const handleMovementNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +94,8 @@ const EditView: React.FC<Props> = ({
     );
     setEditedWorkout({ ...editedWorkout, sets: newSets });
 
-    // Remove from api
+    // TODO
+    // Implement in api so that these are removed from workout
   };
 
   const handleMovementAdd = () => {
