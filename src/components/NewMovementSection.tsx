@@ -63,29 +63,27 @@ const NewMovementSection: React.FC<Props> = ({
       setName(value);
     }
 
-    if (value) {
-      let inputType, index;
-      const valueArr = name.split('-');
+    let inputType, index;
+    const valueArr = name.split('-');
 
-      inputType = valueArr[0];
-      index = parseInt(valueArr[1]);
-      const formattedValue = parseInt(value);
+    inputType = valueArr[0];
+    index = parseInt(valueArr[1]);
+    const formattedValue = parseInt(value);
 
-      let newState;
-      switch (inputType) {
-        case 'reps':
-          newState = [...sets];
-          newState[index].reps = formattedValue;
-          setSets(newState);
-          break;
-        case 'weight':
-          newState = [...sets];
-          newState[index].weight = formattedValue;
-          setSets(newState);
-          break;
-        default:
-          break;
-      }
+    let newState;
+    switch (inputType) {
+      case 'reps':
+        newState = [...sets];
+        newState[index].reps = formattedValue;
+        setSets(newState);
+        break;
+      case 'weight':
+        newState = [...sets];
+        newState[index].weight = formattedValue;
+        setSets(newState);
+        break;
+      default:
+        break;
     }
   };
 
@@ -137,7 +135,7 @@ const NewMovementSection: React.FC<Props> = ({
                   placeholder="Weight"
                   min="0"
                   className="input m-1"
-                  style={{ width: '100px' }}
+                  style={{ width: '80px' }}
                   onChange={handleInputChange}
                 />
               </div>

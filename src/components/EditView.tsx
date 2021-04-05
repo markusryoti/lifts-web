@@ -117,7 +117,7 @@ const EditView: React.FC<Props> = ({
   };
 
   const movementSets = individualSetsToMovementSets(editedWorkout.sets);
-  const debugJson = true;
+  const debugJson = false;
 
   return (
     <>

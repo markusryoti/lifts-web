@@ -49,7 +49,7 @@ const Login = (props: any) => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 p-2">
       <div className="field">
         <label className="label">Username / Email</label>
         <div className="control has-icons-left has-icons-right">
@@ -80,7 +80,7 @@ const Login = (props: any) => {
         </div>
       </div>
 
-      <div className="field is-grouped">
+      <div className="field is-flex is-justify-content-center">
         <div className="control">
           <button className="button is-link" onClick={onFormSubmit}>
             Submit

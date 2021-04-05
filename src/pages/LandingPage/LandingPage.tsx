@@ -8,8 +8,10 @@ const LandingPage = () => {
     <>
       <section className="hero is-large hero-bg">
         <div className="hero-body bg-light" style={{ maxWidth: '500px' }}>
-          <p className="title has-text-danger is-size-1">Primary hero</p>
-          <p className="subtitle has-text-dark is-size-3">Primary subtitle</p>
+          <p className="title has-text-white is-size-1">stay focused</p>
+          <p className="subtitle has-text-primary is-size-4">
+            Keep track of your progress
+          </p>
           <Link to="/signup" className="button is-danger">
             Start Now
           </Link>
@@ -29,7 +31,7 @@ const LandingPage = () => {
           </p>
         </div>
         <section className="mt-5">
-          <div className="columns">
+          <div className="columns mobile-reverse">
             <div className="column">
               <img
                 src="https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"

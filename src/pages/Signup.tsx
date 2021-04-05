@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AuthContext, IProvider } from '../context/auth/AuthState';
 
 interface IFormState {
@@ -52,7 +53,7 @@ const Signup = (props: any) => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 p-2">
       <div className="field">
         <label className="label">Username</label>
         <div className="control has-icons-left has-icons-right">
@@ -113,7 +114,7 @@ const Signup = (props: any) => {
         </div>
       </div>
 
-      <div className="field">
+      <div className="field is-flex is-justify-content-center pt-2">
         <div className="control">
           <label className="checkbox">
             <input type="checkbox" /> I agree to the{' '}
@@ -122,14 +123,16 @@ const Signup = (props: any) => {
         </div>
       </div>
 
-      <div className="field is-grouped">
+      <div className="field is-grouped is-flex is-justify-content-center pt-4">
         <div className="control">
           <button className="button is-link" onClick={onFormSubmit}>
             Submit
           </button>
         </div>
         <div className="control">
-          <button className="button is-link is-light">Cancel</button>
+          <button className="button is-link is-light">
+            <Link to="/">Cancel</Link>
+          </button>
         </div>
       </div>
     </div>

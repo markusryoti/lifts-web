@@ -1,5 +1,13 @@
 .hero-bg {
-    background-image: url('https://images.unsplash.com/photo-1517964603305-11c0f6f66012?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1351&q=80');
-    background-repeat: no-repeat;
-    background-size: cover;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('https://images.unsplash.com/photo-1517964603305-11c0f6f66012?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1351&q=80');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media screen and (max-width: 700px) {
+  .mobile-reverse {
+    display: flex;
+    flex-direction: column-reverse;
+  }
 }

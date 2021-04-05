@@ -143,7 +143,7 @@ const SetEditItem = ({
 };
 
 const inputWidth = {
-  width: '100px',
+  width: '80px',
 };
 
 export default SetEditItem;
